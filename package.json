@@ -4,12 +4,37 @@
   "description": "DynamoDB repository for hash-key and hash-key/range indexed tables. Designed for Lambda use. Handles nicities like created and updated timestamps and default id creation.",
   "license": "MIT",
   "repository": "setho/dynamodb-repository",
+  "engines": {
+    "node": ">=8.1.0"
+  },
+  "scripts": {
+    "test": "npm run lint && jest ./lib --coverage",
+    "lint": "eslint . --ignore-pattern node_modules/ --ignore-pattern coverage/"
+  },
   "main": "index.js",
+  "jest": {
+    "setupTestFrameworkScriptFile": "./jestSetup.js"
+  },
   "keywords": [
     "dynamodb",
     "repository",
     "lambda",
     "setho",
     "seth"
-  ]
+  ],
+  "dependencies": {
+    "aws-sdk": "^2.395.0",
+    "joi": "^14.3.1"
+  },
+  "devDependencies": {
+    "aws-sdk-mock": "^4.3.0",
+    "eslint": "^5.12.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.15.0",
+    "eslint-plugin-jest": "^22.1.3",
+    "jest": "^24.0.0",
+    "jest-chain": "^1.1.2",
+    "jest-extended": "^0.11.0",
+    "sinon": "^7.2.3"
+  }
 }
