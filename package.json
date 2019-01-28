@@ -9,7 +9,8 @@
   },
   "scripts": {
     "test": "npm run lint && jest ./lib --coverage",
-    "lint": "eslint . --ignore-pattern node_modules/ --ignore-pattern coverage/"
+    "test-integration": "jest ./integration-tests",
+    "lint": "eslint . --ignore-pattern node_modules/ --ignore-pattern coverage/ --ignore-pattern integration-tests/"
   },
   "main": "index.js",
   "jest": {
@@ -24,6 +25,7 @@
   ],
   "dependencies": {
     "aws-sdk": "^2.395.0",
+    "http-errors": "^1.7.1",
     "joi": "^14.3.1"
   },
   "devDependencies": {
