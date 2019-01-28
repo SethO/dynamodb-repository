@@ -10,7 +10,7 @@
   "scripts": {
     "test": "npm run lint && jest ./lib --coverage",
     "test-integration": "jest ./integration-tests",
-    "lint": "eslint . --ignore-pattern node_modules/ --ignore-pattern coverage/ --ignore-pattern integration-tests/"
+    "lint": "eslint . --ignore-pattern node_modules/ --ignore-pattern coverage/"
   },
   "main": "index.js",
   "jest": {
