@@ -1,1 +1,5 @@
-module.exports = () => console.log('Coming Soon...');
+const HashKeyRepository = require('./lib/hashRepository');
+
+module.exports = {
+  HashKeyRepository,
+};
