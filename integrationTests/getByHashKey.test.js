@@ -7,7 +7,7 @@ const HashKeyName = 'key';
 describe('When getting by hash key', () => {
   const testKeys = [];
 
-  after(async () => {
+  afterAll(async () => {
     const promises = testKeys.map(async testKey => removeHashKeyItem(testKey));
     await Promise.all(promises);
   });
