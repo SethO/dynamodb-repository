@@ -2,7 +2,7 @@ const AWS = require('aws-sdk');
 const uuid = require('uuid/v1');
 
 const TableName = 'HashKeyTestDB';
-const DocClient = new AWS.DocumentClient();
+const DocClient = new AWS.DynamoDB.DocumentClient();
 
 const createHashKeyItem = async () => {
   const item = {
