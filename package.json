@@ -1,6 +1,6 @@
 {
   "name": "@setho/dynamodb-repository",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "DynamoDB repository for hash-key and hash-key/range indexed tables. Designed for Lambda use. Handles nicities like created and updated timestamps and default id creation.",
   "license": "MIT",
   "repository": "setho/dynamodb-repository",
@@ -10,9 +10,16 @@
   "scripts": {
     "test": "npm run lint && jest ./lib --coverage",
     "test-integration": "jest ./integrationTests",
-    "lint": "eslint . --ignore-pattern node_modules/ --ignore-pattern coverage/"
+    "lint": "eslint . --ignore-pattern node_modules/ --ignore-pattern coverage/",
+    "prepublishOnly": "npm test && npm run test-integration",
+    "preversion": "npm test && npm run test-integration"
   },
   "main": "index.js",
+  "files" : [
+    "index.js",
+    "lib/**/!(*.test.js)",
+    "README.md"
+  ],
   "jest": {
     "setupTestFrameworkScriptFile": "./jestSetup.js"
   },
