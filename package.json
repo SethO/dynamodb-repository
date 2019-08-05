@@ -15,7 +15,7 @@
     "preversion": "npm test && npm run test-integration"
   },
   "main": "index.js",
-  "files" : [
+  "files": [
     "index.js",
     "lib/**/!(*.test.js)",
     "README.md"
