@@ -1,3 +1,4 @@
+const faker = require('faker');
 const { insertHashKeyItem, removeHashKeyItem } = require('./integrationTestUtils');
 const { HashKeyRepository } = require('../index');
 
@@ -23,5 +24,25 @@ describe('When getting by hash key', () => {
 
     // ASSERT
     expect(result.key).toEqual(key);
+  });
+
+  describe('and key is not in db', () => {
+    it('should throw 404', async () => {
+      const repo = new HashKeyRepository({ tableName: TableName, hashKeyName: HashKeyName });
+      const fakeKey = faker.random.uuid();
+
+      // ACT/ASSERT
+      await expect(repo.get(fakeKey)).rejects
+        .toThrow('not found');
+    });
+
+    it('should contain key in error message', async () => {
+      const repo = new HashKeyRepository({ tableName: TableName, hashKeyName: HashKeyName });
+      const fakeKey = faker.random.uuid();
+
+      // ACT/ASSERT
+      await expect(repo.get(fakeKey)).rejects
+        .toThrow(fakeKey);
+    });
   });
 });
