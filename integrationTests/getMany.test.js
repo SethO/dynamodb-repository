@@ -20,6 +20,6 @@ describe('When calling GetMany()', () => {
     const result = await repo.getMany();
 
     // ASSERT
-    expect(result).toEqual(expect.any(Array));
+    expect(result.items).toEqual(expect.any(Array));
   });
 });
