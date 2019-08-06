@@ -3,6 +3,8 @@
 
 DynamoDB repository for hash-key and hash-key/range indexed tables. Designed for Lambda use. Handles nicities like created and updated timestamps and default id creation.
 
+Currently, *only **string** hash-key ids are supported.*
+
 ## Install
   `$ npm install @setho/dynamodb-repository --save`
 
