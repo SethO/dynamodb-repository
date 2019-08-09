@@ -8,8 +8,8 @@
     "node": ">=8.1.0"
   },
   "scripts": {
-    "test": "npm run lint && jest ./lib --coverage",
-    "test-integration": "jest ./integrationTests",
+    "test": "npm run lint && jest ./lib --coverage -c=./jest-config/jest.config.js",
+    "test-integration": "jest ./integrationTests -c=./jest-config/jest.config.js",
     "lint": "eslint . --ignore-pattern node_modules/ --ignore-pattern coverage/",
     "prepublishOnly": "npm test && npm run test-integration",
     "preversion": "npm test && npm run test-integration"
@@ -20,9 +20,6 @@
     "lib/**/!(*.test.js)",
     "README.md"
   ],
-  "jest": {
-    "setupTestFrameworkScriptFile": "./jestSetup.js"
-  },
   "keywords": [
     "dynamodb",
     "repository",
