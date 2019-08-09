@@ -41,8 +41,19 @@ const removeHashKeyItem = async (key) => {
   await DocClient.delete(deleteParms).promise();
 };
 
+const fetchHashKeyItem = async (key) => {
+  const getParams = {
+    TableName,
+    Key: { key },
+  };
+  const { Item } = await DocClient.get(getParams).promise();
+
+  return Item;
+};
+
 module.exports = {
   createHashKeyItem,
   insertHashKeyItem,
   removeHashKeyItem,
+  fetchHashKeyItem,
 };
