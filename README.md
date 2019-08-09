@@ -23,29 +23,26 @@ const myItem = await myRepo(id);
 ### Get Many
 - Requires action `dynamodb:Scan`
 - Accepts optional parameter fields `limit` and `cursor`
+  - `limit` defaults to 100
 - Returns object with `items` (Array) and `cursor` (String)
   - `items` will always be an array; if nothing found, it will be empty
-  - `cursor` will either be present or not, depending on whether there are more items to fetch
+  - `cursor` will be present if there are more items to fetch, otherwise it will be undefined
 ```javascript
-// Defaults to 100 at a time from the begining
+// Example to pull 100 at time until you have all items
 const allItems = [];
-const getAllItems = async (cursor = null) => {
-  const { items, cursor } = await myRepo.getMany();
-  allItems.push(...items);
-
-  if(cursor) {
-
+const getAllItems = async ({ limit, cursor = null }) => {
+  const getResult = await myRepo.getMany({ limit, cursor });
+  allItems.push(...getResult.items);
+  if (getResult.cursor) {
+    await getAllItems({ cursor: getResult.cursor });
   }
-}
-const { items, cursor } = await myRepo.getMany();
+};
+```
 
-// Fetch ten records at a time until finished
-const allResults = [];
-const {items, cursor}
-let cursor = 'initialValue';
-while(cursor) {
-  
-}
+### Remove by Key
+- Requires action `dynamodb:DeleteItem`
+```javascript
+await myRepo.remove(id);
 ```
 
   // More Coming Soon...

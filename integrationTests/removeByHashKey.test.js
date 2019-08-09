@@ -26,5 +26,16 @@ describe('When removing by hash key', () => {
     expect(fetchResult).toBeUndefined();
   });
   
-  // TODO: delete non-existent item should work w/o issue
+  describe('and hash key does not exist', () => {
+    it('should no-op', async () => {
+      // ARRANGE
+      const repo = new HashKeyRepository({ tableName: TableName, hashKeyName: HashKeyName });
+     
+      // ACT
+      const removeAction = async () => repo.remove('some-key-that-does-not-exist');
+
+      // ASSERT
+      expect(removeAction()).toResolve();
+    });
+  });
 });

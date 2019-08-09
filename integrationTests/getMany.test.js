@@ -25,7 +25,7 @@ describe('When calling GetMany()', () => {
   });
 });
 
-describe('When using curosr', () => {
+describe('When scan returns a cursor', () => {
   const testKeys = [];
 
   afterAll(async () => {
@@ -33,7 +33,7 @@ describe('When using curosr', () => {
     await Promise.all(promises);
   });
 
-  it('should respect cursor', async () => {
+  it('should find cursor key in first fetch, but not second', async () => {
     // ARRANGE
     const keys = await insertNumberOfHashKeyItems(4);
     testKeys.push(...keys);
@@ -51,5 +51,35 @@ describe('When using curosr', () => {
     expect(secondResult.items).not.toContainEqual(
       expect.objectContaining({ key: parsedCursor.key }),
     );
+  });
+});
+
+describe('When fetching all with cursor', () => {
+  const testKeys = [];
+
+  afterAll(async () => {
+    const promises = testKeys.map(async testKey => removeHashKeyItem(testKey));
+    await Promise.all(promises);
+  });
+
+  it('should fetch until no curor is returned', async () => {
+    // ARRANGE
+    const keys = await insertNumberOfHashKeyItems(4);
+    testKeys.push(...keys);
+    const repo = new HashKeyRepository({ tableName: TableName, hashKeyName: HashKeyName });
+    const allItems = [];
+    const getAllItems = async ({ limit = 2, cursor = null }) => {
+      const getResult = await repo.getMany({ limit, cursor });
+      allItems.push(...getResult.items);
+      if (getResult.cursor) {
+        await getAllItems({ cursor: getResult.cursor });
+      }
+    };
+
+    // ACT
+    await getAllItems({});
+
+    // ASSERT
+    expect(allItems.length).toBeGreaterThanOrEqual(4);
   });
 });
