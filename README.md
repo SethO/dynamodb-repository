@@ -28,6 +28,15 @@ const myItem = await myRepo(id);
   - `cursor` will either be present or not, depending on whether there are more items to fetch
 ```javascript
 // Defaults to 100 at a time from the begining
+const allItems = [];
+const getAllItems = async (cursor = null) => {
+  const { items, cursor } = await myRepo.getMany();
+  allItems.push(...items);
+
+  if(cursor) {
+
+  }
+}
 const { items, cursor } = await myRepo.getMany();
 
 // Fetch ten records at a time until finished

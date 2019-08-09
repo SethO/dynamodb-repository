@@ -33,6 +33,15 @@ const insertHashKeyItem = async (item) => {
   return itemToSave.key;
 };
 
+const insertNumberOfHashKeyItems = async (number) => {
+  const promises = [];
+  for (let i = 0; i < number; i += 1) {
+    promises.push(insertHashKeyItem());
+  }
+
+  return Promise.all(promises);
+};
+
 const removeHashKeyItem = async (key) => {
   const deleteParms = {
     TableName,
@@ -56,4 +65,5 @@ module.exports = {
   insertHashKeyItem,
   removeHashKeyItem,
   fetchHashKeyItem,
+  insertNumberOfHashKeyItems,
 };
