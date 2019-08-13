@@ -29,6 +29,7 @@
   ],
   "dependencies": {
     "aws-sdk": "^2.395.0",
+    "clone": "^2.1.2",
     "http-errors": "^1.7.1",
     "joi": "^14.3.1",
     "uuid": "^3.3.2"
