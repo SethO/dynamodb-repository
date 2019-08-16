@@ -13,11 +13,23 @@ const { HashKeyRepository } = require('@setho/dynamodb-repository');
 const myRepo = new HashKeyRepository({ tableName: 'Items', hashKeyName: 'id' });
 ```
 
+### Create
+- Requires action `dynamodb:PutItem`
+- Automatically adds a uuid/v4 string as key (this will overwrite any you may try to provide)
+- Automatically provides a `createdAt` and `updatedAt` timestamp in ISO-8601
+- Returns what was saved; does not mutate the item passed in.
+```javascript
+const mySavedItem = await myRepo.create(myItem);
+mySavedItem.id  // a4d02890b7174730b4bbbcf870224951
+mySavedItem.createdAt  // 1979-11-04T09:00:00.000Z
+mySavedItem.updatedAt  // 1979-11-04T09:00:00.000Z
+```
+
 ### Get by Key
 - Requires action `dynamodb:GetItem`.
 - Throws `404` if item not found using [http-errors](https://npmjs.com/package/http-errors).
 ```javascript
-const myItem = await myRepo(id);
+const myItem = await myRepo.get(id);
 ```
 
 ### Get Many
