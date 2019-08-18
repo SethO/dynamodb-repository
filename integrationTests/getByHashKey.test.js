@@ -33,7 +33,7 @@ describe('When getting by hash key', () => {
 
       // ACT/ASSERT
       await expect(repo.get(fakeKey)).rejects
-        .toThrow('not found');
+        .toThrow(`No ${HashKeyName} found`);
     });
 
     it('should contain key in error message', async () => {
