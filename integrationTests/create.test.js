@@ -57,4 +57,50 @@ describe('When creating item', () => {
     expect(itemFromDB.createdAt).not.toBeUndefined();
     expect(itemFromDB.createdAt).toEqual(itemFromDB.updatedAt);
   });
+
+  describe('with a idOption prefix', () => {
+    it('item id should start with prefix', async () => {
+      // ARRANGE
+      const item = await createHashKeyItem();
+      const prefix = 'itm_';
+      const repo = new HashKeyRepository({
+        tableName: TableName,
+        hashKeyName: HashKeyName,
+        idOptions: {
+          prefix,
+        },
+      });
+
+      // ACT
+      const result = await repo.create(item);
+      testKeys.push(result.key);
+
+      // ASSERT
+      const itemFromDB = await fetchHashKeyItem(result.key);
+      expect(itemFromDB[HashKeyName]).toStartWith(prefix);
+    });
+  });
+  
+  describe('with a idOption length', () => {
+    it('item id should have same length', async () => {
+      // ARRANGE
+      const item = await createHashKeyItem();
+      const length = 11;
+      const repo = new HashKeyRepository({
+        tableName: TableName,
+        hashKeyName: HashKeyName,
+        idOptions: {
+          length,
+        },
+      });
+
+      // ACT
+      const result = await repo.create(item);
+      testKeys.push(result.key);
+
+      // ASSERT
+      const itemFromDB = await fetchHashKeyItem(result.key);
+      expect(itemFromDB[HashKeyName].length).toEqual(length);
+    });
+  });
 });
