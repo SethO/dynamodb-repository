@@ -35,14 +35,14 @@
     "nanoid": "^2.1.0"
   },
   "devDependencies": {
-    "aws-sdk-mock": "4.3.0",
+    "aws-sdk-mock": "4.5.0",
     "eslint": "5.12.1",
     "eslint-config-airbnb-base": "13.1.0",
-    "eslint-plugin-import": "2.15.0",
+    "eslint-plugin-import": "2.18.2",
     "eslint-plugin-jest": "22.17.0",
     "faker": "4.1.0",
     "jest": "24.9.0",
     "jest-extended": "0.11.2",
-    "sinon": "7.2.3"
+    "sinon": "7.5.0"
   }
 }
