@@ -9,7 +9,7 @@ describe('When calling GetMany()', () => {
   const testKeys = [];
 
   afterAll(async () => {
-    const promises = testKeys.map(async testKey => removeHashKeyItem(testKey));
+    const promises = testKeys.map(async (testKey) => removeHashKeyItem(testKey));
     await Promise.all(promises);
   });
 
@@ -29,7 +29,7 @@ describe('When scan returns a cursor', () => {
   const testKeys = [];
 
   afterAll(async () => {
-    const promises = testKeys.map(async testKey => removeHashKeyItem(testKey));
+    const promises = testKeys.map(async (testKey) => removeHashKeyItem(testKey));
     await Promise.all(promises);
   });
 
@@ -58,7 +58,7 @@ describe('When fetching all with cursor', () => {
   const testKeys = [];
 
   afterAll(async () => {
-    const promises = testKeys.map(async testKey => removeHashKeyItem(testKey));
+    const promises = testKeys.map(async (testKey) => removeHashKeyItem(testKey));
     await Promise.all(promises);
   });
 

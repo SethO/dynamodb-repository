@@ -25,9 +25,9 @@ const insertHashKeyItem = async (item) => {
   if (!item) {
     itemToSave = await createHashKeyItem();
   } else {
-    itemToSave = Object.assign({}, item);
+    itemToSave = { ...item };
   }
-  
+
   const putParams = {
     TableName,
     Item: itemToSave,

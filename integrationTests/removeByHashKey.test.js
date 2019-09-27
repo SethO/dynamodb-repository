@@ -8,7 +8,7 @@ describe('When removing by hash key', () => {
   const testKeys = [];
 
   afterAll(async () => {
-    const promises = testKeys.map(async testKey => removeHashKeyItem(testKey));
+    const promises = testKeys.map(async (testKey) => removeHashKeyItem(testKey));
     await Promise.all(promises);
   });
 
