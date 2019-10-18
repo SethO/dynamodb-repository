@@ -28,11 +28,11 @@
     "seth"
   ],
   "dependencies": {
-    "aws-sdk": "^2.395.0",
+    "aws-sdk": "^2.552.0",
     "clone": "^2.1.2",
-    "http-errors": "^1.7.1",
+    "http-errors": "^1.7.3",
     "joi": "^14.3.1",
-    "nanoid": "^2.1.0"
+    "nanoid": "^2.1.4"
   },
   "devDependencies": {
     "aws-sdk-mock": "4.5.0",
