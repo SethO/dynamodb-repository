@@ -10,10 +10,22 @@ DynamoDB repository for hash-key and hash-key/range indexed tables. Designed for
 ```javascript
 const { HashKeyRepository } = require('@setho/dynamodb-repository');
 
-const myRepo = new HashKeyRepository({ tableName: 'Items', hashKeyName: 'id' });
+const myRepo = new HashKeyRepository({ 
+  tableName: 'Items', // Required
+  hashKeyName: 'id',  // Required
+  idOptions: {        // Optional
+    length: 22,       // Default is 22
+    prefix: 'itm_',   // Default is empty string
+  }, 
+});
 ```
+#### Constructor
+Use the optional `idOptions` constructor parameter to set `id` length and an optional `prefix` to give your ids some human-readable context. The prefix length is added to the length specified. E.g., if you ask for a `length` of 22 and a `prefix` of 'itm_', all your ids will be strings of length 26.
 
-### Create
+#### Environment Variables
+This library takes advantage of AWS SDK connection reuse *if* you set environment variable `AWS_NODEJS_CONNECTION_REUSE_ENABLED` to 1. This was enabled by the AWS SDK in [release 2.463.0](https://github.com/aws/aws-sdk-js/blob/master/CHANGELOG.md#24630). This can give a [3x speed improvement](https://theburningmonk.com/2019/02/lambda-optimization-tip-enable-http-keep-alive/) per call - I highly recommend setting this variable in your application.
+
+## Create
 - Requires action `dynamodb:PutItem`
 - Automatically adds a uuid/v4 string as key (this will overwrite any you may try to provide)
 - Automatically provides a `createdAt` and `updatedAt` timestamp in ISO-8601
