@@ -27,24 +27,24 @@ This library takes advantage of AWS SDK connection reuse *if* you set environmen
 
 ## Create
 - Requires action `dynamodb:PutItem`
-- Automatically adds a uuid/v4 string as key (this will overwrite any you may try to provide)
+- Automatically adds a string key (this will overwrite any you may try to provide). Use constructor options to specify length and optional prefix.
 - Automatically provides a `createdAt` and `updatedAt` timestamp in ISO-8601
 - Returns what was saved; does not mutate the item passed in.
 ```javascript
 const mySavedItem = await myRepo.create(myItem);
-mySavedItem.id  // a4d02890b7174730b4bbbcf870224951
+mySavedItem.id  // itm_a4d02890b7174730b4bbbc
 mySavedItem.createdAt  // 1979-11-04T09:00:00.000Z
 mySavedItem.updatedAt  // 1979-11-04T09:00:00.000Z
 ```
 
-### Get by Key
+## Get by Key
 - Requires action `dynamodb:GetItem`.
 - Throws `404` if item not found using [http-errors](https://npmjs.com/package/http-errors).
 ```javascript
 const myItem = await myRepo.get(id);
 ```
 
-### Get Many
+## Get Many
 - Requires action `dynamodb:Scan`
 - Accepts optional parameter fields `limit` and `cursor`
   - `limit` defaults to 100
@@ -63,7 +63,7 @@ const getAllItems = async ({ limit, cursor = null }) => {
 };
 ```
 
-### Remove by Key
+## Remove by Key
 - Requires action `dynamodb:DeleteItem`
 ```javascript
 await myRepo.remove(id);
