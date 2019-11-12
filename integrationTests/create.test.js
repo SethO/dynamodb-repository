@@ -18,11 +18,11 @@ describe('When creating item', () => {
     const repo = new HashKeyRepository({ tableName: TableName, hashKeyName: HashKeyName });
 
     // ACT
-    const result = await repo.create(item);
-    testKeys.push(result.key);
+    const { key } = await repo.create(item);
+    testKeys.push(key);
 
     // ASSERT
-    const itemFromDB = await fetchHashKeyItem(result.key);
+    const itemFromDB = await fetchHashKeyItem(key);
     expect(itemFromDB).not.toBeUndefined();
   });
 
@@ -32,12 +32,12 @@ describe('When creating item', () => {
     const repo = new HashKeyRepository({ tableName: TableName, hashKeyName: HashKeyName });
 
     // ACT
-    const result = await repo.create(item);
-    testKeys.push(result.key);
+    const { key } = await repo.create(item);
+    testKeys.push(key);
 
     // ASSERT
-    expect(result.key).not.toEqual(item.key);
-    const itemFromDB = await fetchHashKeyItem(result.key);
+    expect(key).not.toEqual(item.key);
+    const itemFromDB = await fetchHashKeyItem(key);
     expect(itemFromDB.key).not.toEqual(item.key);
   });
 
@@ -72,15 +72,15 @@ describe('When creating item', () => {
       });
 
       // ACT
-      const result = await repo.create(item);
-      testKeys.push(result.key);
+      const { key } = await repo.create(item);
+      testKeys.push(key);
 
       // ASSERT
-      const itemFromDB = await fetchHashKeyItem(result.key);
+      const itemFromDB = await fetchHashKeyItem(key);
       expect(itemFromDB[HashKeyName]).toStartWith(prefix);
     });
   });
-  
+
   describe('with a idOption length', () => {
     it('item id should have same length', async () => {
       // ARRANGE
@@ -95,11 +95,11 @@ describe('When creating item', () => {
       });
 
       // ACT
-      const result = await repo.create(item);
-      testKeys.push(result.key);
+      const { key } = await repo.create(item);
+      testKeys.push(key);
 
       // ASSERT
-      const itemFromDB = await fetchHashKeyItem(result.key);
+      const itemFromDB = await fetchHashKeyItem(key);
       expect(itemFromDB[HashKeyName].length).toEqual(length);
     });
   });

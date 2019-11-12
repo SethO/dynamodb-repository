@@ -20,7 +20,7 @@ describe('When updating an item', () => {
       const repo = new HashKeyRepository({ tableName: TableName, hashKeyName: HashKeyName });
 
       // ACT
-      const updateAction = () => repo.update(itemWithNoKey);
+      const updateAction = async () => repo.update(itemWithNoKey);
 
       // ASSERT
       return expect(updateAction())
@@ -36,7 +36,7 @@ describe('When updating an item', () => {
       const repo = new HashKeyRepository({ tableName: TableName, hashKeyName: HashKeyName });
 
       // ACT
-      const updateAction = () => repo.update(item);
+      const updateAction = async () => repo.update(item);
 
       // ASSERT
       return expect(updateAction())
