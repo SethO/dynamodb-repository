@@ -16,11 +16,14 @@ const myRepo = new HashKeyRepository({
   idOptions: {        // Optional
     length: 22,       // Default is 22
     prefix: 'itm_',   // Default is empty string
-  }, 
+  },
+  documentClient,     // Optional
 });
 ```
 #### Constructor
 Use the optional `idOptions` constructor parameter to set `id` length and an optional `prefix` to give your ids some human-readable context. The prefix length is added to the length specified. E.g., if you ask for a `length` of 22 and a `prefix` of 'itm_', all your ids will be strings of length 26.
+
+Additionally, you can inject your own DocumentClient if you are using a wrapped client (e.g., [Dazn's powertools dynamodb client](https://github.com/getndazn/dazn-lambda-powertools/tree/master/packages/lambda-powertools-dynamodb-client)).
 
 #### Environment Variables
 This library takes advantage of AWS SDK connection reuse *if* you set environment variable `AWS_NODEJS_CONNECTION_REUSE_ENABLED` to 1. This was enabled by the AWS SDK in [release 2.463.0](https://github.com/aws/aws-sdk-js/blob/master/CHANGELOG.md#24630). This can give a [3x speed improvement](https://theburningmonk.com/2019/02/lambda-optimization-tip-enable-http-keep-alive/) per call - I highly recommend setting this variable in your application.
