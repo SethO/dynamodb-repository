@@ -80,27 +80,4 @@ describe('When creating item', () => {
       expect(itemFromDB[KeyName]).toStartWith(prefix);
     });
   });
-
-  describe('with a idOption length', () => {
-    it('item id should have same length', async () => {
-      // ARRANGE
-      const item = await createHashKeyItem();
-      const length = 11;
-      const repo = new KeyValueRepository({
-        tableName: TableName,
-        keyName: KeyName,
-        idOptions: {
-          length,
-        },
-      });
-
-      // ACT
-      const { key } = await repo.create(item);
-      testKeys.push(key);
-
-      // ASSERT
-      const itemFromDB = await fetchHashKeyItem(key);
-      expect(itemFromDB[KeyName].length).toEqual(length);
-    });
-  });
 });
