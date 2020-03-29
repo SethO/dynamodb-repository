@@ -1,5 +1,5 @@
 const { insertHashKeyItem, removeHashKeyItem, fetchHashKeyItem } = require('./integrationTestUtils');
-const { HashKeyRepository } = require('../index');
+const { KeyValueRepository } = require('../index');
 
 const TableName = 'HashKeyTestDB';
 const HashKeyName = 'key';
@@ -14,7 +14,7 @@ describe('When removing by hash key', () => {
 
   it('should remove item', async () => {
     // ARRANGE
-    const repo = new HashKeyRepository({ tableName: TableName, hashKeyName: HashKeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, hashKeyName: HashKeyName });
     const key = await insertHashKeyItem();
     testKeys.push(key);
 
@@ -29,7 +29,7 @@ describe('When removing by hash key', () => {
   describe('and hash key does not exist', () => {
     it('should no-op', async () => {
       // ARRANGE
-      const repo = new HashKeyRepository({ tableName: TableName, hashKeyName: HashKeyName });
+      const repo = new KeyValueRepository({ tableName: TableName, hashKeyName: HashKeyName });
      
       // ACT
       const removeAction = async () => repo.remove('some-key-that-does-not-exist');

@@ -1,5 +1,5 @@
-const HashKeyRepository = require('./lib/hashRepository');
+const KeyValueRepository = require('./lib/keyValueRepository');
 
 module.exports = {
-  HashKeyRepository,
+  KeyValueRepository,
 };

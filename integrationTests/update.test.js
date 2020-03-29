@@ -1,6 +1,6 @@
 const faker = require('faker');
 const { removeHashKeyItem, createHashKeyItem, insertHashKeyItem } = require('./integrationTestUtils');
-const { HashKeyRepository } = require('../index');
+const { KeyValueRepository } = require('../index');
 
 const TableName = 'HashKeyTestDB';
 const HashKeyName = 'key';
@@ -17,7 +17,7 @@ describe('When updating an item', () => {
     it('should return a 400 (Bad Request)', () => {
       // ARRANGE
       const itemWithNoKey = {};
-      const repo = new HashKeyRepository({ tableName: TableName, hashKeyName: HashKeyName });
+      const repo = new KeyValueRepository({ tableName: TableName, hashKeyName: HashKeyName });
 
       // ACT
       const updateAction = async () => repo.update(itemWithNoKey);
@@ -33,7 +33,7 @@ describe('When updating an item', () => {
     it('should return a 404 (Not Found)', async () => {
       // ARRANGE
       const item = await createHashKeyItem();
-      const repo = new HashKeyRepository({ tableName: TableName, hashKeyName: HashKeyName });
+      const repo = new KeyValueRepository({ tableName: TableName, hashKeyName: HashKeyName });
 
       // ACT
       const updateAction = async () => repo.update(item);
@@ -51,7 +51,7 @@ describe('When updating an item', () => {
     const originalCreatedAt = item.createdAt;
     const key = await insertHashKeyItem(item);
     testKeys.push(key);
-    const repo = new HashKeyRepository({ tableName: TableName, hashKeyName: HashKeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, hashKeyName: HashKeyName });
     item.createdAt = faker.date.future().toISOString();
 
     // ACT
@@ -69,7 +69,7 @@ describe('When updating an item', () => {
     item.updatedAt = originalCreatedAt;
     const key = await insertHashKeyItem(item);
     testKeys.push(key);
-    const repo = new HashKeyRepository({ tableName: TableName, hashKeyName: HashKeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, hashKeyName: HashKeyName });
     const newCreatedAt = faker.date.future().toISOString();
     item.createdAt = newCreatedAt;
 

@@ -1,5 +1,5 @@
 const { removeHashKeyItem, createHashKeyItem, fetchHashKeyItem } = require('./integrationTestUtils');
-const { HashKeyRepository } = require('../index');
+const { KeyValueRepository } = require('../index');
 
 const TableName = 'HashKeyTestDB';
 const HashKeyName = 'key';
@@ -15,7 +15,7 @@ describe('When creating item', () => {
   it('should save item to db', async () => {
     // ARRANGE
     const item = await createHashKeyItem();
-    const repo = new HashKeyRepository({ tableName: TableName, hashKeyName: HashKeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, hashKeyName: HashKeyName });
 
     // ACT
     const { key } = await repo.create(item);
@@ -29,7 +29,7 @@ describe('When creating item', () => {
   it('should replace any id on provided item', async () => {
     // ARRANGE
     const item = await createHashKeyItem();
-    const repo = new HashKeyRepository({ tableName: TableName, hashKeyName: HashKeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, hashKeyName: HashKeyName });
 
     // ACT
     const { key } = await repo.create(item);
@@ -44,7 +44,7 @@ describe('When creating item', () => {
   it('should set createdAt and updateAt', async () => {
     // ARRANGE
     const item = await createHashKeyItem();
-    const repo = new HashKeyRepository({ tableName: TableName, hashKeyName: HashKeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, hashKeyName: HashKeyName });
 
     // ACT
     const result = await repo.create(item);
@@ -63,7 +63,7 @@ describe('When creating item', () => {
       // ARRANGE
       const item = await createHashKeyItem();
       const prefix = 'itm_';
-      const repo = new HashKeyRepository({
+      const repo = new KeyValueRepository({
         tableName: TableName,
         hashKeyName: HashKeyName,
         idOptions: {
@@ -86,7 +86,7 @@ describe('When creating item', () => {
       // ARRANGE
       const item = await createHashKeyItem();
       const length = 11;
-      const repo = new HashKeyRepository({
+      const repo = new KeyValueRepository({
         tableName: TableName,
         hashKeyName: HashKeyName,
         idOptions: {
