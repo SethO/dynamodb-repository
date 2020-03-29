@@ -1,6 +1,6 @@
 {
   "name": "@setho/dynamodb-repository",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "DynamoDB repository for hash-key and hash-key/range indexed tables. Designed for Lambda use. Handles nicities like created and updated timestamps and default id creation.",
   "license": "MIT",
   "repository": "setho/dynamodb-repository",
@@ -28,10 +28,10 @@
     "seth"
   ],
   "dependencies": {
+    "@hapi/joi": "^17.1.1",
     "aws-sdk": "^2.552.0",
     "clone": "^2.1.2",
     "http-errors": "^1.7.3",
-    "joi": "^14.3.1",
     "nanoid": "^2.1.4"
   },
   "devDependencies": {
