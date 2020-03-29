@@ -14,14 +14,13 @@ const myRepo = new KeyValueRepository({
   tableName: 'Items', // Required
   keyName: 'id',      // Required
   idOptions: {        // Optional
-    length: 22,       // Default is 22
-    prefix: 'itm_',   // Default is empty string
+    prefix: 'ITEM#',   // Default is empty string
   },
   documentClient,     // Optional
 });
 ```
 #### Constructor
-Use the optional `idOptions` constructor parameter to set `id` length and an optional `prefix` to give your ids some human-readable context. The prefix length is added to the length specified. E.g., if you ask for a `length` of 22 and a `prefix` of 'itm_', all your ids will be strings of length 26.
+Use the optional `idOptions` constructor parameter to set an optional `prefix` to give your ids some human-readable context. The remainder of the key is a KSUID, which is both unique and lexicographically sortable. See segment.io's explanation of and motivation for KSUIDs [here](https://github.com/segmentio/ksuid).
 
 Additionally, you can inject your own DocumentClient if you are using a wrapped client (e.g., [Dazn's powertools dynamodb client](https://github.com/getndazn/dazn-lambda-powertools/tree/master/packages/lambda-powertools-dynamodb-client)).
 
