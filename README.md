@@ -12,7 +12,7 @@ const { KeyValueRepository } = require('@setho/dynamodb-repository');
 
 const myRepo = new KeyValueRepository({ 
   tableName: 'Items', // Required
-  hashKeyName: 'id',  // Required
+  keyName: 'id',      // Required
   idOptions: {        // Optional
     length: 22,       // Default is 22
     prefix: 'itm_',   // Default is empty string

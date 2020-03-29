@@ -3,7 +3,7 @@ const { removeHashKeyItem, createHashKeyItem, insertHashKeyItem } = require('./i
 const { KeyValueRepository } = require('../index');
 
 const TableName = 'HashKeyTestDB';
-const HashKeyName = 'key';
+const KeyName = 'key';
 
 describe('When updating an item', () => {
   const testKeys = [];
@@ -13,11 +13,11 @@ describe('When updating an item', () => {
     await Promise.all(promises);
   });
 
-  describe('and item does not have property of [hashKeyName]', () => {
+  describe('and item does not have property of [keyName]', () => {
     it('should return a 400 (Bad Request)', () => {
       // ARRANGE
       const itemWithNoKey = {};
-      const repo = new KeyValueRepository({ tableName: TableName, hashKeyName: HashKeyName });
+      const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
 
       // ACT
       const updateAction = async () => repo.update(itemWithNoKey);
@@ -33,7 +33,7 @@ describe('When updating an item', () => {
     it('should return a 404 (Not Found)', async () => {
       // ARRANGE
       const item = await createHashKeyItem();
-      const repo = new KeyValueRepository({ tableName: TableName, hashKeyName: HashKeyName });
+      const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
 
       // ACT
       const updateAction = async () => repo.update(item);
@@ -51,7 +51,7 @@ describe('When updating an item', () => {
     const originalCreatedAt = item.createdAt;
     const key = await insertHashKeyItem(item);
     testKeys.push(key);
-    const repo = new KeyValueRepository({ tableName: TableName, hashKeyName: HashKeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
     item.createdAt = faker.date.future().toISOString();
 
     // ACT
@@ -69,7 +69,7 @@ describe('When updating an item', () => {
     item.updatedAt = originalCreatedAt;
     const key = await insertHashKeyItem(item);
     testKeys.push(key);
-    const repo = new KeyValueRepository({ tableName: TableName, hashKeyName: HashKeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
     const newCreatedAt = faker.date.future().toISOString();
     item.createdAt = newCreatedAt;
 

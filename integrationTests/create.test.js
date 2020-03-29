@@ -2,7 +2,7 @@ const { removeHashKeyItem, createHashKeyItem, fetchHashKeyItem } = require('./in
 const { KeyValueRepository } = require('../index');
 
 const TableName = 'HashKeyTestDB';
-const HashKeyName = 'key';
+const KeyName = 'key';
 
 describe('When creating item', () => {
   const testKeys = [];
@@ -15,7 +15,7 @@ describe('When creating item', () => {
   it('should save item to db', async () => {
     // ARRANGE
     const item = await createHashKeyItem();
-    const repo = new KeyValueRepository({ tableName: TableName, hashKeyName: HashKeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
 
     // ACT
     const { key } = await repo.create(item);
@@ -29,7 +29,7 @@ describe('When creating item', () => {
   it('should replace any id on provided item', async () => {
     // ARRANGE
     const item = await createHashKeyItem();
-    const repo = new KeyValueRepository({ tableName: TableName, hashKeyName: HashKeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
 
     // ACT
     const { key } = await repo.create(item);
@@ -44,7 +44,7 @@ describe('When creating item', () => {
   it('should set createdAt and updateAt', async () => {
     // ARRANGE
     const item = await createHashKeyItem();
-    const repo = new KeyValueRepository({ tableName: TableName, hashKeyName: HashKeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
 
     // ACT
     const result = await repo.create(item);
@@ -65,7 +65,7 @@ describe('When creating item', () => {
       const prefix = 'itm_';
       const repo = new KeyValueRepository({
         tableName: TableName,
-        hashKeyName: HashKeyName,
+        keyName: KeyName,
         idOptions: {
           prefix,
         },
@@ -77,7 +77,7 @@ describe('When creating item', () => {
 
       // ASSERT
       const itemFromDB = await fetchHashKeyItem(key);
-      expect(itemFromDB[HashKeyName]).toStartWith(prefix);
+      expect(itemFromDB[KeyName]).toStartWith(prefix);
     });
   });
 
@@ -88,7 +88,7 @@ describe('When creating item', () => {
       const length = 11;
       const repo = new KeyValueRepository({
         tableName: TableName,
-        hashKeyName: HashKeyName,
+        keyName: KeyName,
         idOptions: {
           length,
         },
@@ -100,7 +100,7 @@ describe('When creating item', () => {
 
       // ASSERT
       const itemFromDB = await fetchHashKeyItem(key);
-      expect(itemFromDB[HashKeyName].length).toEqual(length);
+      expect(itemFromDB[KeyName].length).toEqual(length);
     });
   });
 });

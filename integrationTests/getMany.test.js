@@ -3,7 +3,7 @@ const { KeyValueRepository } = require('../index');
 const { parseCursor } = require('../lib/utils');
 
 const TableName = 'HashKeyTestDB';
-const HashKeyName = 'key';
+const KeyName = 'key';
 
 describe('When calling GetMany()', () => {
   const testKeys = [];
@@ -15,7 +15,7 @@ describe('When calling GetMany()', () => {
 
   it('should return array', async () => {
     // ARRANGE
-    const repo = new KeyValueRepository({ tableName: TableName, hashKeyName: HashKeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
 
     // ACT
     const result = await repo.getMany();
@@ -37,7 +37,7 @@ describe('When scan returns a cursor', () => {
     // ARRANGE
     const keys = await insertNumberOfHashKeyItems(4);
     testKeys.push(...keys);
-    const repo = new KeyValueRepository({ tableName: TableName, hashKeyName: HashKeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
 
     // ACT
     const firstResult = await repo.getMany({ limit: 2 });
@@ -66,7 +66,7 @@ describe('When fetching all with cursor', () => {
     // ARRANGE
     const keys = await insertNumberOfHashKeyItems(4);
     testKeys.push(...keys);
-    const repo = new KeyValueRepository({ tableName: TableName, hashKeyName: HashKeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
     const allItems = [];
     const getAllItems = async ({ limit = 2, cursor = null }) => {
       const getResult = await repo.getMany({ limit, cursor });
