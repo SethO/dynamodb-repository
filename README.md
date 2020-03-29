@@ -64,6 +64,8 @@ const getAllItems = async ({ limit, cursor = null }) => {
     await getAllItems({ cursor: getResult.cursor });
   }
 };
+await getAllItems();
+// The array allItems now has all your items. Go nuts.
 ```
 
 ## Remove by Key
