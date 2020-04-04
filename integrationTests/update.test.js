@@ -1,5 +1,5 @@
 const faker = require('faker');
-const { removeHashKeyItem, createHashKeyItem, insertHashKeyItem } = require('./integrationTestUtils');
+const { removeHashKeyItem, createKeyValueItem, insertHashKeyItem } = require('./integrationTestUtils');
 const { KeyValueRepository } = require('../index');
 
 const TableName = 'HashKeyTestDB';
@@ -32,14 +32,14 @@ describe('When updating an item', () => {
   describe('and item does not exist in db', () => {
     it('should return a 404 (Not Found)', async () => {
       // ARRANGE
-      const item = await createHashKeyItem();
+      const item = await createKeyValueItem();
       const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
 
       // ACT
       const updateAction = async () => repo.update(item);
 
       // ASSERT
-      return expect(updateAction())
+      await expect(updateAction())
         .rejects
         .toHaveProperty('statusCode', 404);
     });
@@ -47,12 +47,11 @@ describe('When updating an item', () => {
 
   it('should maintain original createdAt value', async () => {
     // ARRANGE
-    const item = await createHashKeyItem();
+    const item = await createKeyValueItem();
     const originalCreatedAt = item.createdAt;
     const key = await insertHashKeyItem(item);
     testKeys.push(key);
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
-    item.createdAt = faker.date.future().toISOString();
 
     // ACT
     const result = await repo.update(item);
@@ -60,23 +59,69 @@ describe('When updating an item', () => {
     // ASSERT
     expect(result.createdAt).toEqual(originalCreatedAt);
   });
-  
+
   it('should change original updatedAt value', async () => {
     // ARRANGE
-    const item = await createHashKeyItem();
-    const originalCreatedAt = faker.date.past().toISOString();
-    item.createdAt = originalCreatedAt;
-    item.updatedAt = originalCreatedAt;
+    const item = await createKeyValueItem();
     const key = await insertHashKeyItem(item);
     testKeys.push(key);
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
-    const newCreatedAt = faker.date.future().toISOString();
-    item.createdAt = newCreatedAt;
 
     // ACT
     const result = await repo.update(item);
 
     // ASSERT
-    expect(result.createdAt).toEqual(originalCreatedAt);
+    expect(result.updatedAt).not.toEqual(item.updatedAt);
+  });
+
+  it('should update revision value', async () => {
+    // ARRANGE
+    const item = await createKeyValueItem();
+    const key = await insertHashKeyItem(item);
+    testKeys.push(key);
+    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
+
+    // ACT
+    const result = await repo.update(item);
+
+    // ASSERT
+    expect(result.revision).toEqual(item.revision + 1);
+  });
+
+  describe('and createdAt field is modified', () => {
+    it('should throw 409 (Conflict)', async () => {
+      // ARRANGE
+      const item = await createKeyValueItem();
+      const key = await insertHashKeyItem(item);
+      testKeys.push(key);
+      const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
+      item.createdAt = faker.date.past();
+      // ACT
+      const updateAction = () => repo.update(item);
+
+      // ASSERT
+      await expect(updateAction())
+        .rejects
+        .toHaveProperty('statusCode', 409);
+    });
+  });
+  
+  describe('and revision is off', () => {
+    it('should throw 409 (Conflict)', async () => {
+      // ARRANGE
+      const item = await createKeyValueItem();
+      const oldRevision = item.revision - 1;
+      const key = await insertHashKeyItem(item);
+      testKeys.push(key);
+      const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
+      item.revision = oldRevision;
+      // ACT
+      const updateAction = () => repo.update(item);
+
+      // ASSERT
+      await expect(updateAction())
+        .rejects
+        .toHaveProperty('statusCode', 409);
+    });
   });
 });

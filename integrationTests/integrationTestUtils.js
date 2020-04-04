@@ -6,12 +6,13 @@ const uuidv4 = require('uuid/v4');
 const TableName = 'HashKeyTestDB';
 const DocClient = new AWS.DynamoDB.DocumentClient();
 
-const createHashKeyItem = async () => {
+const createKeyValueItem = async () => {
   const createdDateString = faker.date.recent().toISOString();
   const item = {
     key: uuidv4(),
     createdAt: createdDateString,
     updatedAt: createdDateString,
+    revision: faker.random.number({ min: 1, max: 50 }),
     field1: faker.lorem.word(),
     map1: {
       field2: faker.lorem.word(),
@@ -24,7 +25,7 @@ const createHashKeyItem = async () => {
 const insertHashKeyItem = async (item) => {
   let itemToSave;
   if (!item) {
-    itemToSave = await createHashKeyItem();
+    itemToSave = await createKeyValueItem();
   } else {
     itemToSave = { ...item };
   }
@@ -66,7 +67,7 @@ const fetchHashKeyItem = async (key) => {
 };
 
 module.exports = {
-  createHashKeyItem,
+  createKeyValueItem,
   insertHashKeyItem,
   removeHashKeyItem,
   fetchHashKeyItem,

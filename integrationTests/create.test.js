@@ -1,4 +1,4 @@
-const { removeHashKeyItem, createHashKeyItem, fetchHashKeyItem } = require('./integrationTestUtils');
+const { removeHashKeyItem, createKeyValueItem, fetchHashKeyItem } = require('./integrationTestUtils');
 const { KeyValueRepository } = require('../index');
 
 const TableName = 'HashKeyTestDB';
@@ -14,7 +14,7 @@ describe('When creating item', () => {
 
   it('should save item to db', async () => {
     // ARRANGE
-    const item = await createHashKeyItem();
+    const item = await createKeyValueItem();
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
 
     // ACT
@@ -28,7 +28,7 @@ describe('When creating item', () => {
 
   it('should replace any id on provided item', async () => {
     // ARRANGE
-    const item = await createHashKeyItem();
+    const item = await createKeyValueItem();
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
 
     // ACT
@@ -43,7 +43,7 @@ describe('When creating item', () => {
 
   it('should set createdAt and updateAt', async () => {
     // ARRANGE
-    const item = await createHashKeyItem();
+    const item = await createKeyValueItem();
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
 
     // ACT
@@ -61,7 +61,7 @@ describe('When creating item', () => {
   describe('with a idOption prefix', () => {
     it('item id should start with prefix', async () => {
       // ARRANGE
-      const item = await createHashKeyItem();
+      const item = await createKeyValueItem();
       const prefix = 'itm_';
       const repo = new KeyValueRepository({
         tableName: TableName,
