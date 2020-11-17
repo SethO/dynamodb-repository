@@ -1,5 +1,5 @@
 # dynamodb-repository
-![](https://img.shields.io/npm/v/@setho/dynamodb-repository.svg)  ![](https://app.codeship.com/projects/a911ad40-03eb-0137-5493-663ef6d42e08/status?branch=master)
+![](https://img.shields.io/npm/v/@setho/dynamodb-repository.svg)  ![Node.js CI](https://github.com/SethO/dynamodb-repository/workflows/CI/badge.svg)
 
 DynamoDB repository for key-value indexed tables. Designed for Lambda use. Handles niceties like created and updated timestamps and default id creation.
 
