@@ -16,6 +16,7 @@ describe('When testing dynamodb connection', () => {
     const docClient = new AWS.DynamoDB.DocumentClient();
     const result = await docClient.query(params).promise();
 
+    console.log(process.env);
     expect(result.Items).toHaveLength(82);
   });
 });
