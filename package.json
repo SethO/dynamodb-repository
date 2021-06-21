@@ -34,7 +34,7 @@
     "ksuid": "^2.0.0"
   },
   "devDependencies": {
-    "aws-sdk-mock": "5.1.0",
+    "aws-sdk-mock": "5.2.1",
     "eslint": "7.27.0",
     "eslint-config-airbnb-base": "14.2.1",
     "eslint-plugin-jest": "24.3.6",
