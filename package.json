@@ -31,14 +31,14 @@
     "@hapi/joi": "^17.1.1",
     "aws-sdk": "^2.799.0",
     "http-errors": "^1.7.3",
-    "ksuid": "^2.0.0"
+    "ulid": "^2.3.0"
   },
   "devDependencies": {
     "aws-sdk-mock": "5.4.0",
     "eslint": "7.32.0",
     "eslint-config-airbnb-base": "14.2.1",
-    "eslint-plugin-jest": "25.0.4",
     "eslint-plugin-import": "2.24.2",
+    "eslint-plugin-jest": "25.0.4",
     "faker": "5.5.3",
     "jest": "27.2.5",
     "jest-extended": "0.11.5",
