@@ -1,6 +1,6 @@
 {
   "name": "@setho/dynamodb-repository",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "DynamoDB repository for hash-key and hash-key/range indexed tables. Designed for Lambda use. Handles nicities like created and updated timestamps and default id creation.",
   "license": "MIT",
   "repository": "setho/dynamodb-repository",
