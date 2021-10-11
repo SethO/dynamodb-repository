@@ -14,5 +14,6 @@ module.exports = {
   },
   rules: {
     'no-trailing-spaces': [2, { skipBlankLines: true }],
+    'no-use-before-define': 0,
   },
 };

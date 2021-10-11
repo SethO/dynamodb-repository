@@ -12,7 +12,7 @@ const createKeyValueItem = async () => {
     key: uuidv4(),
     createdAt: createdDateString,
     updatedAt: createdDateString,
-    revision: faker.random.number({ min: 1, max: 50 }),
+    revision: faker.datatype.number({ min: 1, max: 50 }),
     field1: faker.lorem.word(),
     map1: {
       field2: faker.lorem.word(),

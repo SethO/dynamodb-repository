@@ -29,7 +29,7 @@ describe('When getting by hash key', () => {
   describe('and key is not in db', () => {
     it('should throw 404', async () => {
       const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
-      const fakeKey = faker.random.uuid();
+      const fakeKey = faker.datatype.uuid();
 
       // ACT/ASSERT
       await expect(repo.get(fakeKey)).rejects
@@ -38,7 +38,7 @@ describe('When getting by hash key', () => {
 
     it('should contain key in error message', async () => {
       const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
-      const fakeKey = faker.random.uuid();
+      const fakeKey = faker.datatype.uuid();
 
       // ACT/ASSERT
       await expect(repo.get(fakeKey)).rejects
