@@ -35,7 +35,7 @@ describe('When removing by hash key', () => {
       const removeAction = async () => repo.remove('some-key-that-does-not-exist');
 
       // ASSERT
-      expect(removeAction()).toResolve();
+      await expect(removeAction()).toResolve();
     });
   });
 });
