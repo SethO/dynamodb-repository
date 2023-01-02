@@ -41,7 +41,7 @@
     "eslint-plugin-jest": "26.1.5",
     "faker": "5.5.3",
     "jest": "28.0.2",
-    "jest-extended": "2.0.0",
+    "jest-extended": "3.2.1",
     "sinon": "13.0.2"
   }
 }
