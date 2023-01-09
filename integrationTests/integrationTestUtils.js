@@ -12,7 +12,7 @@ const createKeyValueItem = async () => {
     key: ulid(),
     createdAt: createdDateString,
     updatedAt: createdDateString,
-    revision: faker.datatype.number({ min: 1, max: 50 }), u
+    revision: faker.datatype.number({ min: 1, max: 50 }),
     field1: faker.lorem.word(),
     map1: {
       field2: faker.lorem.word(),
