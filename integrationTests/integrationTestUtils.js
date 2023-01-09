@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const AWS = require('aws-sdk');
 const faker = require('faker');
-const uuidv4 = require('uuid/v4');
+const { ulid } = require('ulid');
 
 const TableName = 'HashKeyTestDB';
 const DocClient = new AWS.DynamoDB.DocumentClient();
@@ -9,10 +9,10 @@ const DocClient = new AWS.DynamoDB.DocumentClient();
 const createKeyValueItem = async () => {
   const createdDateString = faker.date.recent().toISOString();
   const item = {
-    key: uuidv4(),
+    key: ulid(),
     createdAt: createdDateString,
     updatedAt: createdDateString,
-    revision: faker.datatype.number({ min: 1, max: 50 }),
+    revision: faker.datatype.number({ min: 1, max: 50 }), u
     field1: faker.lorem.word(),
     map1: {
       field2: faker.lorem.word(),
