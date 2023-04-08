@@ -1,5 +1,2 @@
-import KeyValueRepository from './lib/keyValueRepository';
-
-export default {
-  KeyValueRepository,
-};
+/* eslint-disable import/prefer-default-export */
+export {default as KeyValueRepository} from './lib/keyValueRepository';

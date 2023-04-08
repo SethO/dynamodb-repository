@@ -1,3 +1,5 @@
+import {faker} from '@faker-js/faker';
+
 import {
   removeHashKeyItem,
   createKeyValueItem,
@@ -54,6 +56,21 @@ describe('When updating an item', () => {
     });
   });
 
+  it('should update the item in db', async () => {
+    // ARRANGE
+    const item = await createKeyValueItem();
+    const key = await insertHashKeyItem(item);
+    testKeys.push(key);
+    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
+    const newField1 = faker.lorem.slug();
+
+    // ACT
+    const result = await repo.update({...item, field1: newField1});
+
+    // ASSERT
+    expect(result.field1).toEqual(newField1);
+  });
+  
   it('should maintain original createdAt value', async () => {
     // ARRANGE
     const item = await createKeyValueItem();
