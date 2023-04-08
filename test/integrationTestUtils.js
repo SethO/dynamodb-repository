@@ -1,10 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
-const AWS = require('aws-sdk');
 const { faker } = require('@faker-js/faker');
 const { ulid } = require('ulid');
+const getDynamoDbClient = require('./documentClient');
 
 const TableName = 'HashKeyTestDB';
-const DocClient = new AWS.DynamoDB.DocumentClient({ region: 'us-east-1' });
+const DocClient = getDynamoDbClient();
 
 const createKeyValueItem = async () => {
   const createdDateString = faker.date.recent().toISOString();

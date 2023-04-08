@@ -1,9 +1,11 @@
 const { removeHashKeyItem, insertNumberOfHashKeyItems } = require('./integrationTestUtils');
 const { KeyValueRepository } = require('../index');
 const { parseCursor } = require('../lib/utils');
+const getDynamoDbClient = require('./documentClient');
 
 const TableName = 'HashKeyTestDB';
 const KeyName = 'key';
+const documentClient = getDynamoDbClient();
 
 describe('When calling GetMany()', () => {
   const testKeys = [];
@@ -15,7 +17,7 @@ describe('When calling GetMany()', () => {
 
   it('should return array', async () => {
     // ARRANGE
-    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
 
     // ACT
     const result = await repo.getMany();
@@ -37,7 +39,7 @@ describe('When scan returns a cursor', () => {
     // ARRANGE
     const keys = await insertNumberOfHashKeyItems(4);
     testKeys.push(...keys);
-    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
 
     // ACT
     const firstResult = await repo.getMany({ limit: 2 });
@@ -64,7 +66,7 @@ describe('When fetching all with cursor', () => {
     // ARRANGE
     const keys = await insertNumberOfHashKeyItems(4);
     testKeys.push(...keys);
-    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
     const allItems = [];
     const getAllItems = async ({ limit = 2, cursor = null }) => {
       const getResult = await repo.getMany({ limit, cursor });

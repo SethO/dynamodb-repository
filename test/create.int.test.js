@@ -4,12 +4,14 @@ const {
   fetchHashKeyItem,
 } = require('./integrationTestUtils');
 const { KeyValueRepository } = require('../index');
+const getDynamoDbClient = require('./documentClient');
 
 const TableName = 'HashKeyTestDB';
 const KeyName = 'key';
 
 describe('When creating item', () => {
   const testKeys = [];
+  const documentClient = getDynamoDbClient();
 
   afterAll(async () => {
     const promises = testKeys.map(async (testKey) => removeHashKeyItem(testKey));
@@ -19,7 +21,7 @@ describe('When creating item', () => {
   it('should save item to db', async () => {
     // ARRANGE
     const item = await createKeyValueItem();
-    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
 
     // ACT
     const { key } = await repo.create(item);
@@ -33,7 +35,7 @@ describe('When creating item', () => {
   it('should replace any id on provided item', async () => {
     // ARRANGE
     const item = await createKeyValueItem();
-    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
 
     // ACT
     const { key } = await repo.create(item);
@@ -48,7 +50,7 @@ describe('When creating item', () => {
   it('should set createdAt and updateAt', async () => {
     // ARRANGE
     const item = await createKeyValueItem();
-    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
 
     // ACT
     const result = await repo.create(item);
@@ -73,6 +75,7 @@ describe('When creating item', () => {
         idOptions: {
           prefix,
         },
+        documentClient,
       });
 
       // ACT

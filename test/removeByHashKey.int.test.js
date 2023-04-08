@@ -4,9 +4,11 @@ const {
   fetchHashKeyItem,
 } = require('./integrationTestUtils');
 const { KeyValueRepository } = require('../index');
+const getDynamoDbClient = require('./documentClient');
 
 const TableName = 'HashKeyTestDB';
 const KeyName = 'key';
+const documentClient = getDynamoDbClient();
 
 describe('When removing by hash key', () => {
   const testKeys = [];
@@ -18,7 +20,7 @@ describe('When removing by hash key', () => {
 
   it('should remove item', async () => {
     // ARRANGE
-    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
     const key = await insertHashKeyItem();
     testKeys.push(key);
 
@@ -33,7 +35,11 @@ describe('When removing by hash key', () => {
   describe('and hash key does not exist', () => {
     it('should no-op', async () => {
       // ARRANGE
-      const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
+      const repo = new KeyValueRepository({
+        tableName: TableName,
+        keyName: KeyName,
+        documentClient,
+      });
 
       // ACT
       const removeAction = async () => repo.remove('some-key-that-does-not-exist');

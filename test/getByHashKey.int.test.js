@@ -1,12 +1,14 @@
 const { faker } = require('@faker-js/faker');
 const { insertHashKeyItem, removeHashKeyItem } = require('./integrationTestUtils');
 const { KeyValueRepository } = require('../index');
+const getDynamoDbClient = require('./documentClient');
 
 const TableName = 'HashKeyTestDB';
 const KeyName = 'key';
 
 describe('When getting by hash key', () => {
   const testKeys = [];
+  const documentClient = getDynamoDbClient();
 
   afterAll(async () => {
     const promises = testKeys.map(async (testKey) => removeHashKeyItem(testKey));
@@ -15,7 +17,7 @@ describe('When getting by hash key', () => {
 
   it('should fetch item', async () => {
     // ARRANGE
-    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
+    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
     const key = await insertHashKeyItem();
     testKeys.push(key);
 
@@ -28,7 +30,11 @@ describe('When getting by hash key', () => {
 
   describe('and key is not in db', () => {
     it('should throw 404', async () => {
-      const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
+      const repo = new KeyValueRepository({
+        tableName: TableName,
+        keyName: KeyName,
+        documentClient,
+      });
       const fakeKey = faker.datatype.uuid();
 
       // ACT/ASSERT
@@ -36,7 +42,11 @@ describe('When getting by hash key', () => {
     });
 
     it('should contain key in error message', async () => {
-      const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
+      const repo = new KeyValueRepository({
+        tableName: TableName,
+        keyName: KeyName,
+        documentClient,
+      });
       const fakeKey = faker.datatype.uuid();
 
       // ACT/ASSERT
