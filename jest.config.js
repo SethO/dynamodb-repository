@@ -1,6 +1,7 @@
 module.exports = {
   setupFilesAfterEnv: ['jest-extended/all'],
+  testEnvironment: 'node',
   transform: {
-    '^.+\\.jsx?$': '@swc/jest',
+    '^.+\\.(t|j)sx?$': '@swc/jest',
   },
 };
