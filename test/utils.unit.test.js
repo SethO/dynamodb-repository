@@ -1,6 +1,6 @@
 const createError = require('http-errors');
 const { faker } = require('@faker-js/faker');
-const { createCursor, parseCursor, createId } = require('./utils');
+const { createCursor, parseCursor, createId } = require('../lib/utils');
 
 describe('When creating cursor', () => {
   describe('from a string', () => {

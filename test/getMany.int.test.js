@@ -45,9 +45,7 @@ describe('When scan returns a cursor', () => {
 
     // ASSERT
     const parsedCursor = parseCursor(firstResult.cursor);
-    expect(firstResult.items).toContainEqual(
-      expect.objectContaining({ key: parsedCursor.key }),
-    );
+    expect(firstResult.items).toContainEqual(expect.objectContaining({ key: parsedCursor.key }));
     expect(secondResult.items).not.toContainEqual(
       expect.objectContaining({ key: parsedCursor.key }),
     );

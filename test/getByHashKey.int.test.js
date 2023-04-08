@@ -32,8 +32,7 @@ describe('When getting by hash key', () => {
       const fakeKey = faker.datatype.uuid();
 
       // ACT/ASSERT
-      await expect(repo.get(fakeKey)).rejects
-        .toThrow(`No ${KeyName} found`);
+      await expect(repo.get(fakeKey)).rejects.toThrow(`No ${KeyName} found`);
     });
 
     it('should contain key in error message', async () => {
@@ -41,8 +40,7 @@ describe('When getting by hash key', () => {
       const fakeKey = faker.datatype.uuid();
 
       // ACT/ASSERT
-      await expect(repo.get(fakeKey)).rejects
-        .toThrow(fakeKey);
+      await expect(repo.get(fakeKey)).rejects.toThrow(fakeKey);
     });
   });
 });

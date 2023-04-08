@@ -1,4 +1,8 @@
-const { removeHashKeyItem, createKeyValueItem, fetchHashKeyItem } = require('./integrationTestUtils');
+const {
+  removeHashKeyItem,
+  createKeyValueItem,
+  fetchHashKeyItem,
+} = require('./integrationTestUtils');
 const { KeyValueRepository } = require('../index');
 
 const TableName = 'HashKeyTestDB';

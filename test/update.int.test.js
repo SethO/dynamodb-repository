@@ -1,5 +1,9 @@
 const { faker } = require('@faker-js/faker');
-const { removeHashKeyItem, createKeyValueItem, insertHashKeyItem } = require('./integrationTestUtils');
+const {
+  removeHashKeyItem,
+  createKeyValueItem,
+  insertHashKeyItem,
+} = require('./integrationTestUtils');
 const { KeyValueRepository } = require('../index');
 
 const TableName = 'HashKeyTestDB';
@@ -23,9 +27,7 @@ describe('When updating an item', () => {
       const updateAction = async () => repo.update(itemWithNoKey);
 
       // ASSERT
-      return expect(updateAction())
-        .rejects
-        .toHaveProperty('statusCode', 400);
+      return expect(updateAction()).rejects.toHaveProperty('statusCode', 400);
     });
   });
 
@@ -39,9 +41,7 @@ describe('When updating an item', () => {
       const updateAction = async () => repo.update(item);
 
       // ASSERT
-      await expect(updateAction())
-        .rejects
-        .toHaveProperty('statusCode', 404);
+      await expect(updateAction()).rejects.toHaveProperty('statusCode', 404);
     });
   });
 
@@ -100,9 +100,7 @@ describe('When updating an item', () => {
       const updateAction = () => repo.update(item);
 
       // ASSERT
-      await expect(updateAction())
-        .rejects
-        .toHaveProperty('statusCode', 409);
+      await expect(updateAction()).rejects.toHaveProperty('statusCode', 409);
     });
   });
 
@@ -119,9 +117,7 @@ describe('When updating an item', () => {
       const updateAction = () => repo.update(item);
 
       // ASSERT
-      await expect(updateAction())
-        .rejects
-        .toHaveProperty('statusCode', 409);
+      await expect(updateAction()).rejects.toHaveProperty('statusCode', 409);
     });
   });
 });

@@ -1,4 +1,4 @@
-const validator = require('./validator');
+const validator = require('../lib/validator');
 
 describe('When validating hash key repository constructor', () => {
   describe('with correct fields', () => {

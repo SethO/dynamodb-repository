@@ -1,4 +1,4 @@
-const KeyValueRepository = require('./keyValueRepository');
+const KeyValueRepository = require('../lib/keyValueRepository');
 
 describe('When instantiating hashKey repository', () => {
   it('should store table name', () => {

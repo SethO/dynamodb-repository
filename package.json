@@ -9,12 +9,13 @@
   },
   "scripts": {
     "test": "npm run lint && npm run test:unit",
-    "test:unit": "jest ./lib",
-    "test-integration": "jest ./integrationTests",
+    "test:unit": "npx jest unit.test --silent",
+    "test:int": "npx jest int.test --silent",
     "lint": "eslint . --ignore-pattern node_modules/ --ignore-pattern coverage/",
     "prepublishOnly": "npm test && npm run test-integration",
     "preversion": "npm test && npm run test-integration",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "smart-publish": "npx publish-if-not-exists"
   },
   "main": "index.js",
   "files": [

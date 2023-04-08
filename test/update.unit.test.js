@@ -1,5 +1,5 @@
 const { faker } = require('@faker-js/faker');
-const KeyValueRepository = require('./keyValueRepository');
+const KeyValueRepository = require('../lib/keyValueRepository');
 
 describe('When updating item', () => {
   describe('and item does not have property of [keyName]', () => {

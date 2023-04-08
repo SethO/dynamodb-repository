@@ -1,4 +1,8 @@
-const { insertHashKeyItem, removeHashKeyItem, fetchHashKeyItem } = require('./integrationTestUtils');
+const {
+  insertHashKeyItem,
+  removeHashKeyItem,
+  fetchHashKeyItem,
+} = require('./integrationTestUtils');
 const { KeyValueRepository } = require('../index');
 
 const TableName = 'HashKeyTestDB';
@@ -25,12 +29,12 @@ describe('When removing by hash key', () => {
     const fetchResult = await fetchHashKeyItem(key);
     expect(fetchResult).toBeUndefined();
   });
-  
+
   describe('and hash key does not exist', () => {
     it('should no-op', async () => {
       // ARRANGE
       const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName });
-     
+
       // ACT
       const removeAction = async () => repo.remove('some-key-that-does-not-exist');
 
