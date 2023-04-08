@@ -1,4 +1,5 @@
-const DynamoDB = require('aws-sdk/clients/dynamodb');
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
+const { DynamoDBDocumentClient } = require('@aws-sdk/lib-dynamodb');
 
 const DynamoDbConfig = {
   region: 'us-east-1',
@@ -6,10 +7,12 @@ const DynamoDbConfig = {
 
 let client;
 
-const getDynamoDbClient = (config = DynamoDbConfig) => {
-  if (!client) {
-    client = new DynamoDB.DocumentClient(config);
+const getDynamoDbClient = () => {
+  if (client) {
+    return client;
   }
+  const ddbClient = new DynamoDBClient(DynamoDbConfig);
+  client = DynamoDBDocumentClient.from(ddbClient);
 
   return client;
 };

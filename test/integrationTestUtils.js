@@ -1,6 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const { faker } = require('@faker-js/faker');
 const { ulid } = require('ulid');
+const { DeleteCommand, GetCommand, PutCommand } = require('@aws-sdk/lib-dynamodb');
+
 const getDynamoDbClient = require('./documentClient');
 
 const TableName = 'HashKeyTestDB';
@@ -34,7 +36,7 @@ const insertHashKeyItem = async (item) => {
     TableName,
     Item: itemToSave,
   };
-  await DocClient.put(putParams).promise();
+  await DocClient.send(new PutCommand(putParams));
 
   return itemToSave.key;
 };
@@ -49,11 +51,11 @@ const insertNumberOfHashKeyItems = async (number) => {
 };
 
 const removeHashKeyItem = async (key) => {
-  const deleteParms = {
+  const deleteParams = {
     TableName,
     Key: { key },
   };
-  await DocClient.delete(deleteParms).promise();
+  await DocClient.send(new DeleteCommand(deleteParams));
 };
 
 const fetchHashKeyItem = async (key) => {
@@ -61,7 +63,7 @@ const fetchHashKeyItem = async (key) => {
     TableName,
     Key: { key },
   };
-  const { Item } = await DocClient.get(getParams).promise();
+  const { Item } = await DocClient.send(new GetCommand(getParams));
 
   return Item;
 };

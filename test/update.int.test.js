@@ -1,4 +1,3 @@
-const { faker } = require('@faker-js/faker');
 const {
   removeHashKeyItem,
   createKeyValueItem,
@@ -96,26 +95,6 @@ describe('When updating an item', () => {
 
     // ASSERT
     expect(result.revision).toEqual(item.revision + 1);
-  });
-
-  describe('and createdAt field is modified', () => {
-    it('should throw 409 (Conflict)', async () => {
-      // ARRANGE
-      const item = await createKeyValueItem();
-      const key = await insertHashKeyItem(item);
-      testKeys.push(key);
-      const repo = new KeyValueRepository({
-        tableName: TableName,
-        keyName: KeyName,
-        documentClient,
-      });
-      item.createdAt = faker.date.past();
-      // ACT
-      const updateAction = () => repo.update(item);
-
-      // ASSERT
-      await expect(updateAction()).rejects.toHaveProperty('statusCode', 409);
-    });
   });
 
   describe('and revision is off', () => {

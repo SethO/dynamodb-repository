@@ -7,7 +7,7 @@ describe('When updating item', () => {
       // ARRANGE
       const keyName = faker.lorem.word();
       const itemWithNoKeyName = {};
-      const repo = new KeyValueRepository({ tableName: 'x', keyName });
+      const repo = new KeyValueRepository({ tableName: 'x', keyName, documentClient: {} });
 
       // ACT
       const updateAction = () => repo.update(itemWithNoKeyName);

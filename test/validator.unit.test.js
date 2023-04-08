@@ -7,6 +7,7 @@ describe('When validating hash key repository constructor', () => {
       const constructorArgs = {
         tableName: 'x',
         keyName: 'x',
+        documentClient: {},
       };
 
       // ACT
@@ -62,6 +63,19 @@ describe('When validating hash key repository constructor', () => {
 
       // ASSERT
       expect(validationAction).toThrowWithMessage(Error, /keyName/);
+    });
+  });
+
+  describe('with missing document client', () => {
+    it('should throw', () => {
+      // ARRANGE
+      const constructorArgs = { tableName: 'x', keyName: 'x' };
+
+      // ACT
+      const validationAction = () => validator.keyValueRepoConstructor(constructorArgs);
+
+      // ASSERT
+      expect(validationAction).toThrow(/documentClient/i);
     });
   });
 
