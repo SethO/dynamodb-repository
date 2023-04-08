@@ -44,7 +44,7 @@ describe('When creating item', () => {
     // ASSERT
     expect(key).not.toEqual(item.key);
     const itemFromDB = await fetchHashKeyItem(key);
-    expect(itemFromDB.key).not.toEqual(item.key);
+    expect(itemFromDB?.key).not.toEqual(item.key);
   });
 
   it('should set createdAt and updateAt', async () => {
@@ -60,8 +60,8 @@ describe('When creating item', () => {
     expect(result.createdAt).not.toBeUndefined();
     expect(result.createdAt).toEqual(result.updatedAt);
     const itemFromDB = await fetchHashKeyItem(result.key);
-    expect(itemFromDB.createdAt).not.toBeUndefined();
-    expect(itemFromDB.createdAt).toEqual(itemFromDB.updatedAt);
+    expect(itemFromDB?.createdAt).not.toBeUndefined();
+    expect(itemFromDB?.createdAt).toEqual(itemFromDB?.updatedAt);
   });
 
   describe('with a idOption prefix', () => {
@@ -84,7 +84,7 @@ describe('When creating item', () => {
 
       // ASSERT
       const itemFromDB = await fetchHashKeyItem(key);
-      expect(itemFromDB[KeyName]).toStartWith(prefix);
+      expect(itemFromDB?.[KeyName]).toStartWith(prefix);
     });
   });
 });
