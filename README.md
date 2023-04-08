@@ -10,6 +10,8 @@ DynamoDB repository for key-value indexed tables. Designed for Lambda use. Handl
 
 ## Usage
 
+### TypeScript/ES6
+
 ```typescript
 import { KeyValueRepository } from '@setho/dynamodb-repository';
 
@@ -23,6 +25,8 @@ const myRepo = new KeyValueRepository({
   documentClient, // Required - V3 DynamoDBDocumentClient from @aws-sdk/lib-dynamodb
 });
 ```
+
+### JavaScript
 
 ```javascript
 const { KeyValueRepository } = require('@setho/dynamodb-repository');
