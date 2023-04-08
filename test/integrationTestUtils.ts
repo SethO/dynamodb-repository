@@ -1,14 +1,13 @@
-/* eslint-disable import/no-extraneous-dependencies */
-const { faker } = require('@faker-js/faker');
-const { ulid } = require('ulid');
-const { DeleteCommand, GetCommand, PutCommand } = require('@aws-sdk/lib-dynamodb');
+import { faker } from '@faker-js/faker';
+import { ulid } from 'ulid';
+import { DeleteCommand, GetCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
 
 const getDynamoDbClient = require('./documentClient');
 
 const TableName = 'HashKeyTestDB';
 const DocClient = getDynamoDbClient();
 
-const createKeyValueItem = async () => {
+export const createKeyValueItem = async () => {
   const createdDateString = faker.date.recent().toISOString();
   const item = {
     key: ulid(),
@@ -24,7 +23,7 @@ const createKeyValueItem = async () => {
   return item;
 };
 
-const insertHashKeyItem = async (item) => {
+export const insertHashKeyItem = async (item?: any) => {
   let itemToSave;
   if (!item) {
     itemToSave = await createKeyValueItem();
@@ -41,7 +40,7 @@ const insertHashKeyItem = async (item) => {
   return itemToSave.key;
 };
 
-const insertNumberOfHashKeyItems = async (number) => {
+export const insertNumberOfHashKeyItems = async (number: number) => {
   const promises = [];
   for (let i = 0; i < number; i += 1) {
     promises.push(insertHashKeyItem());
@@ -50,7 +49,7 @@ const insertNumberOfHashKeyItems = async (number) => {
   return Promise.all(promises);
 };
 
-const removeHashKeyItem = async (key) => {
+export const removeHashKeyItem = async (key: string) => {
   const deleteParams = {
     TableName,
     Key: { key },
@@ -58,7 +57,7 @@ const removeHashKeyItem = async (key) => {
   await DocClient.send(new DeleteCommand(deleteParams));
 };
 
-const fetchHashKeyItem = async (key) => {
+export const fetchHashKeyItem = async (key: string) => {
   const getParams = {
     TableName,
     Key: { key },
@@ -66,12 +65,4 @@ const fetchHashKeyItem = async (key) => {
   const { Item } = await DocClient.send(new GetCommand(getParams));
 
   return Item;
-};
-
-module.exports = {
-  createKeyValueItem,
-  insertHashKeyItem,
-  removeHashKeyItem,
-  fetchHashKeyItem,
-  insertNumberOfHashKeyItems,
 };

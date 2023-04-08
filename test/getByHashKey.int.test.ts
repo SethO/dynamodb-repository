@@ -1,13 +1,13 @@
-const { faker } = require('@faker-js/faker');
-const { insertHashKeyItem, removeHashKeyItem } = require('./integrationTestUtils');
-const { KeyValueRepository } = require('../index');
-const getDynamoDbClient = require('./documentClient');
+import { faker } from '@faker-js/faker';
+import { insertHashKeyItem, removeHashKeyItem } from './integrationTestUtils';
+import getDynamoDbClient from './documentClient';
+import KeyValueRepository from '../lib/keyValueRepository';
 
 const TableName = 'HashKeyTestDB';
 const KeyName = 'key';
 
 describe('When getting by hash key', () => {
-  const testKeys = [];
+  const testKeys: string[] = [];
   const documentClient = getDynamoDbClient();
 
   afterAll(async () => {

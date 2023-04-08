@@ -1,14 +1,14 @@
-const { removeHashKeyItem, insertNumberOfHashKeyItems } = require('./integrationTestUtils');
-const { KeyValueRepository } = require('../index');
-const { parseCursor } = require('../lib/utils');
-const getDynamoDbClient = require('./documentClient');
+import { removeHashKeyItem, insertNumberOfHashKeyItems } from './integrationTestUtils';
+import { parseCursor } from '../lib/utils';
+import getDynamoDbClient from './documentClient';
+import KeyValueRepository from '../lib/keyValueRepository';
 
 const TableName = 'HashKeyTestDB';
 const KeyName = 'key';
 const documentClient = getDynamoDbClient();
 
 describe('When calling GetMany()', () => {
-  const testKeys = [];
+  const testKeys: string[] = [];
 
   afterAll(async () => {
     const promises = testKeys.map(async (testKey) => removeHashKeyItem(testKey));
@@ -28,7 +28,7 @@ describe('When calling GetMany()', () => {
 });
 
 describe('When scan returns a cursor', () => {
-  const testKeys = [];
+  const testKeys: string[] = [];
 
   afterAll(async () => {
     const promises = testKeys.map(async (testKey) => removeHashKeyItem(testKey));
@@ -46,7 +46,7 @@ describe('When scan returns a cursor', () => {
     const secondResult = await repo.getMany({ limit: 2, cursor: firstResult.cursor });
 
     // ASSERT
-    const parsedCursor = parseCursor(firstResult.cursor);
+    const parsedCursor = parseCursor(firstResult.cursor!);
     expect(firstResult.items).toContainEqual(expect.objectContaining({ key: parsedCursor.key }));
     expect(secondResult.items).not.toContainEqual(
       expect.objectContaining({ key: parsedCursor.key }),
@@ -55,20 +55,21 @@ describe('When scan returns a cursor', () => {
 });
 
 describe('When fetching all with cursor', () => {
-  const testKeys = [];
+  const testKeys: string[] = [];
 
   afterAll(async () => {
     const promises = testKeys.map(async (testKey) => removeHashKeyItem(testKey));
     await Promise.all(promises);
   });
 
-  it('should fetch until no curor is returned', async () => {
+  it('should fetch until no cursor is returned', async () => {
     // ARRANGE
     const keys = await insertNumberOfHashKeyItems(4);
     testKeys.push(...keys);
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
-    const allItems = [];
-    const getAllItems = async ({ limit = 2, cursor = null }) => {
+    const allItems: any[] = [];
+    const getAllItems = async (input: { limit?: number, cursor?: string }) => {
+      const { limit = 2, cursor } = input;
       const getResult = await repo.getMany({ limit, cursor });
       allItems.push(...getResult.items);
       if (getResult.cursor) {

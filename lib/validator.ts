@@ -1,5 +1,7 @@
-const Joi = require('@hapi/joi');
-const { BadRequest } = require('http-errors');
+import Joi from 'joi';
+import { BadRequest } from 'http-errors';
+
+import { ConstructorArgs } from './types';
 
 const keyValueRepoConstructorSchema = Joi.object().keys({
   tableName: Joi.string().required(),
@@ -11,9 +13,9 @@ const keyValueRepoConstructorSchema = Joi.object().keys({
   documentClient: Joi.object().required(),
 });
 
-const createMessage = (error) => error.details.map((detail) => detail.message).join(', ');
+const createMessage = (error: Joi.ValidationError) => error.details.map((detail) => detail.message).join(', ');
 
-const keyValueRepoConstructor = (constructorArgs) => {
+const keyValueRepoConstructor = (constructorArgs: ConstructorArgs) => {
   const { error } = keyValueRepoConstructorSchema.validate(constructorArgs);
   if (error) {
     const errorMessage = createMessage(error);
@@ -21,6 +23,4 @@ const keyValueRepoConstructor = (constructorArgs) => {
   }
 };
 
-module.exports = {
-  keyValueRepoConstructor,
-};
+export default keyValueRepoConstructor;

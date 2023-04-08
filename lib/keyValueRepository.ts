@@ -1,10 +1,19 @@
-const { BadRequest, NotFound, Conflict } = require('http-errors');
-const { DeleteCommand, GetCommand, PutCommand, ScanCommand } = require('@aws-sdk/lib-dynamodb');
+import { BadRequest, NotFound, Conflict } from 'http-errors';
+import { DeleteCommand, DynamoDBDocumentClient, GetCommand, PutCommand, ScanCommand, ScanCommandInput, ScanCommandOutput } from '@aws-sdk/lib-dynamodb';
 
-const validate = require('./validator');
-const { createCursor, parseCursor, createId } = require('./utils');
+import { ConstructorArgs, IdOptions } from "./types";
+import keyValueRepoConstructor from './validator';
+import { createCursor, parseCursor, createId } from './utils';
 
-module.exports = class HashRepository {
+class KeyValueRepository {
+  private tableName: string;
+
+  private keyName: string;
+
+  private idOptions?: IdOptions;
+
+  private docClient: DynamoDBDocumentClient;
+
   /**
    * Create a HashKey Repository
    * @param {Object} param - The constructor parameter
@@ -15,15 +24,16 @@ module.exports = class HashRepository {
    * @param {number} [param.idOptions.length=22] - The length of the random bits of the generated id
    * @param {string} [param.idOptions.prefix=] - The prefix of your id
    */
-  constructor({ tableName, keyName, idOptions, documentClient }) {
-    validate.keyValueRepoConstructor({ tableName, keyName, idOptions, documentClient });
+  constructor(input: ConstructorArgs) {
+    keyValueRepoConstructor(input);
+    const { tableName, keyName, idOptions, documentClient } = input;
     this.tableName = tableName;
     this.keyName = keyName;
     this.idOptions = idOptions;
     this.docClient = documentClient;
   }
 
-  async get(hashKey) {
+  async get(hashKey: string) {
     const key = { [this.keyName]: hashKey };
     const getParams = {
       TableName: this.tableName,
@@ -38,18 +48,19 @@ module.exports = class HashRepository {
     return Item;
   }
 
-  async getMany({ limit = 100, cursor } = {}) {
-    const scanParams = {
+  async getMany(input: { limit?: number, cursor?: string } = {}) {
+    const { limit = 100, cursor } = input;
+    const scanParams: ScanCommandInput = {
       TableName: this.tableName,
       Limit: limit,
     };
     if (cursor) {
       scanParams.ExclusiveStartKey = parseCursor(cursor);
     }
-    let result;
+    let result: ScanCommandOutput;
     try {
       result = await this.docClient.send(new ScanCommand(scanParams));
-    } catch (err) {
+    } catch (err: any) {
       if (err.code === 'ValidationException') {
         throw new BadRequest('cursor is not valid');
       }
@@ -60,12 +71,12 @@ module.exports = class HashRepository {
       : undefined;
 
     return {
-      items: result.Items,
+      items: result.Items || [],
       cursor: returnCursor,
     };
   }
 
-  async remove(hashKey) {
+  async remove(hashKey: string) {
     const key = { [this.keyName]: hashKey };
     const deleteParams = {
       TableName: this.tableName,
@@ -74,7 +85,7 @@ module.exports = class HashRepository {
     await this.docClient.send(new DeleteCommand(deleteParams));
   }
 
-  async create(item) {
+  async create(item: any) {
     const itemToSave = { ...item };
     itemToSave[this.keyName] = await createId(this.idOptions);
     const isoString = new Date().toISOString();
@@ -91,9 +102,9 @@ module.exports = class HashRepository {
     return itemToSave;
   }
 
-  async update(item) {
+  async update(item: any) {
     validateHashKeyPropertyExists({ item, keyName: this.keyName });
-    const itemToSave = setRepositoryModifiedProperties({ item });
+    const itemToSave = setRepositoryModifiedProperties(item);
     const { revision: previousRevision } = item;
     const putParams = {
       TableName: this.tableName,
@@ -108,7 +119,7 @@ module.exports = class HashRepository {
     };
     try {
       await this.docClient.send(new PutCommand(putParams));
-    } catch (err) {
+    } catch (err: any) {
       if (err.name === 'ConditionalCheckFailedException') {
         await this.get(item[this.keyName]);
         throw Conflict();
@@ -120,16 +131,19 @@ module.exports = class HashRepository {
   }
 };
 
-const validateHashKeyPropertyExists = ({ item, keyName }) => {
+const validateHashKeyPropertyExists = (input: { item: any, keyName: string }) => {
+  const { item, keyName } = input;
   if (!item[keyName]) {
     throw new BadRequest();
   }
 };
 
-const setRepositoryModifiedProperties = ({ item }) => {
+const setRepositoryModifiedProperties = ( item: any) => {
   const returnItem = { ...item };
   returnItem.updatedAt = new Date().toISOString();
   returnItem.revision = item.revision + 1;
 
   return returnItem;
 };
+
+export default KeyValueRepository;

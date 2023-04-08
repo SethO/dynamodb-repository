@@ -1,17 +1,17 @@
-const {
+import {
   insertHashKeyItem,
   removeHashKeyItem,
   fetchHashKeyItem,
-} = require('./integrationTestUtils');
-const { KeyValueRepository } = require('../index');
-const getDynamoDbClient = require('./documentClient');
+} from './integrationTestUtils';
+import getDynamoDbClient from './documentClient';
+import KeyValueRepository from '../lib/keyValueRepository';
 
 const TableName = 'HashKeyTestDB';
 const KeyName = 'key';
 const documentClient = getDynamoDbClient();
 
 describe('When removing by hash key', () => {
-  const testKeys = [];
+  const testKeys: string[] = [];
 
   afterAll(async () => {
     const promises = testKeys.map(async (testKey) => removeHashKeyItem(testKey));

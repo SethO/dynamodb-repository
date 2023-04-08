@@ -1,16 +1,16 @@
-const {
+import {
   removeHashKeyItem,
   createKeyValueItem,
   insertHashKeyItem,
-} = require('./integrationTestUtils');
-const { KeyValueRepository } = require('../index');
-const getDynamoDbClient = require('./documentClient');
+} from './integrationTestUtils';
+import getDynamoDbClient from './documentClient';
+import KeyValueRepository from '../lib/keyValueRepository';
 
 const TableName = 'HashKeyTestDB';
 const KeyName = 'key';
 
 describe('When updating an item', () => {
-  const testKeys = [];
+  const testKeys: string[] = [];
   const documentClient = getDynamoDbClient();
 
   afterAll(async () => {

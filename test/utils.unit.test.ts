@@ -1,6 +1,5 @@
-const createError = require('http-errors');
-const { faker } = require('@faker-js/faker');
-const { createCursor, parseCursor, createId } = require('../lib/utils');
+import { faker } from '@faker-js/faker';
+import { createCursor, parseCursor, createId } from '../lib/utils';
 
 describe('When creating cursor', () => {
   describe('from a string', () => {
@@ -19,10 +18,10 @@ describe('When creating cursor', () => {
   describe('from an integer', () => {
     it('should result in a string', () => {
       // ARRANGE
-      const originalNumberCursor = faker.datatype.number();
+      const originalNumberCursor = faker.datatype.number() as unknown;
 
       // ACT
-      const result = createCursor(originalNumberCursor);
+      const result = createCursor(originalNumberCursor as string);
 
       // ASSERT
       expect(result).toBeString();
@@ -61,7 +60,7 @@ describe('When parsing cursor', () => {
   describe('with original number value', () => {
     it('should return original value', () => {
       // ARRANGE
-      const originalNumberValue = faker.datatype.number();
+      const originalNumberValue = faker.datatype.number().toString();
       const encodedCursor = createCursor(originalNumberValue);
 
       // ACT
@@ -75,16 +74,13 @@ describe('When parsing cursor', () => {
   describe('and JSON.parse() throws error', () => {
     it('should return 400', () => {
       // ARRANGE
-      JSON.parse = jest.fn().mockImplementationOnce(() => {
-        throw Error('boom');
-      });
+      const badCursor = true as unknown;
 
       // ACT
-      const parseCursorAction = () => parseCursor('anything');
+      const parseCursorAction = () => parseCursor(badCursor as string);
 
       // ASSERT
-      const expectedError = new createError.BadRequest('cursor is not valid');
-      expect(parseCursorAction).toThrow(expectedError);
+      expect(parseCursorAction).toThrow(/bad request/i);
     });
   });
 });
@@ -115,14 +111,14 @@ describe('When creating id', () => {
   describe('with a number prefix', () => {
     it('should return string id that begins with prefix', async () => {
       // ARRANGE
-      const prefix = 900;
+      const prefix = '900';
 
       // ACT
       const id = await createId({ prefix });
 
       // ASSERT
       expect(id).toBeString();
-      expect(id).toStartWith(prefix);
+      expect(id).toStartWith(prefix.toString());
     });
   });
 });
