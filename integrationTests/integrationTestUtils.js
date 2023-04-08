@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const AWS = require('aws-sdk');
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 const { ulid } = require('ulid');
 
 const TableName = 'HashKeyTestDB';

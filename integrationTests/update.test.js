@@ -1,4 +1,4 @@
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 const { removeHashKeyItem, createKeyValueItem, insertHashKeyItem } = require('./integrationTestUtils');
 const { KeyValueRepository } = require('../index');
 
@@ -105,7 +105,7 @@ describe('When updating an item', () => {
         .toHaveProperty('statusCode', 409);
     });
   });
-  
+
   describe('and revision is off', () => {
     it('should throw 409 (Conflict)', async () => {
       // ARRANGE
