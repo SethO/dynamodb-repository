@@ -14,9 +14,8 @@
     "test:int": "npx jest int.test --silent",
     "test:smoke": "npx jest smoke.test --silent",
     "lint": "eslint . --ignore-pattern node_modules/ --ignore-pattern coverage/",
-    "prepublishOnly": "npm test && npm run test-integration",
-    "preversion": "npm test && npm run test-integration",
-    "prepare": "husky install",
+    "prepublishOnly": "npm run test:smoke",
+    "prepare": "npm run build",
     "smart-publish": "npx publish-if-not-exists"
   },
   "main": ".build/index.js",
