@@ -4,7 +4,7 @@ const { faker } = require('@faker-js/faker');
 const { ulid } = require('ulid');
 
 const TableName = 'HashKeyTestDB';
-const DocClient = new AWS.DynamoDB.DocumentClient();
+const DocClient = new AWS.DynamoDB.DocumentClient({ region: 'us-east-1' });
 
 const createKeyValueItem = async () => {
   const createdDateString = faker.date.recent().toISOString();
