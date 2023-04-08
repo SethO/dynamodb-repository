@@ -2,10 +2,10 @@ import { faker } from '@faker-js/faker';
 import { ulid } from 'ulid';
 import { DeleteCommand, GetCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
 
-const getDynamoDbClient = require('./documentClient');
+import getDocumentClient from './documentClient';
 
 const TableName = 'HashKeyTestDB';
-const DocClient = getDynamoDbClient();
+const DocClient = getDocumentClient();
 
 export const createKeyValueItem = async () => {
   const createdDateString = faker.date.recent().toISOString();

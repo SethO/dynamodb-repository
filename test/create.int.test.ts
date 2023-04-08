@@ -3,7 +3,7 @@ import {
   createKeyValueItem,
   fetchHashKeyItem,
 } from './integrationTestUtils';
-import getDynamoDbClient from './documentClient';
+import getDocumentClient from './documentClient';
 import KeyValueRepository from '../lib/keyValueRepository';
 
 const TableName = 'HashKeyTestDB';
@@ -11,7 +11,7 @@ const KeyName = 'key';
 
 describe('When creating item', () => {
   const testKeys: string[] = [];
-  const documentClient = getDynamoDbClient();
+  const documentClient = getDocumentClient();
 
   afterAll(async () => {
     const promises = testKeys.map(async (testKey) => removeHashKeyItem(testKey));

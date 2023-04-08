@@ -1,11 +1,11 @@
 import { removeHashKeyItem, insertNumberOfHashKeyItems } from './integrationTestUtils';
 import { parseCursor } from '../lib/utils';
-import getDynamoDbClient from './documentClient';
+import getDocumentClient from './documentClient';
 import KeyValueRepository from '../lib/keyValueRepository';
 
 const TableName = 'HashKeyTestDB';
 const KeyName = 'key';
-const documentClient = getDynamoDbClient();
+const documentClient = getDocumentClient();
 
 describe('When calling GetMany()', () => {
   const testKeys: string[] = [];

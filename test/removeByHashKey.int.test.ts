@@ -3,12 +3,12 @@ import {
   removeHashKeyItem,
   fetchHashKeyItem,
 } from './integrationTestUtils';
-import getDynamoDbClient from './documentClient';
+import getDocumentClient from './documentClient';
 import KeyValueRepository from '../lib/keyValueRepository';
 
 const TableName = 'HashKeyTestDB';
 const KeyName = 'key';
-const documentClient = getDynamoDbClient();
+const documentClient = getDocumentClient();
 
 describe('When removing by hash key', () => {
   const testKeys: string[] = [];
