@@ -1,19 +1,14 @@
 module.exports = {
-  extends: [
-    'airbnb-base',
-    'plugin:jest/recommended',
-  ],
-  plugins: [
-    'import',
-    'jest',
-  ],
+  extends: ['airbnb-base', 'prettier'],
+  plugins: ['no-only-tests'],
   env: {
     node: true,
-    'jest/globals': true,
-    mocha: true,
+    jest: true,
   },
   rules: {
-    'no-trailing-spaces': [2, { skipBlankLines: true }],
-    'no-use-before-define': 0,
+    'import/extensions': 0,
+    'no-use-before-define': 'off',
+    'no-only-tests/no-only-tests': 'error',
+    'no-console': 2,
   },
 };

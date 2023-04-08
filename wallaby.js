@@ -1,12 +1,6 @@
 module.exports = () => ({
-  files: [
-    'lib/**/*.js',
-    'jest-config/**/*.js',
-    '!lib/**/*.test.js',
-  ],
-  tests: [
-    'lib/**/*.test.js',
-  ],
+  files: ['lib/**/*.js', 'jest-config/**/*.js', '!lib/**/*.test.js'],
+  tests: ['lib/**/*.test.js'],
   env: {
     type: 'node',
     runner: 'node',
@@ -15,7 +9,7 @@ module.exports = () => ({
   debug: true,
   setup(wallaby) {
     // eslint-disable-next-line global-require
-    const jestConfig = require('./jest-config/jest.config');
+    const jestConfig = require('./jest.config');
     wallaby.testFramework.configure(jestConfig);
   },
 });
