@@ -64,7 +64,7 @@
     "typescript": "^5.0.4"
   },
   "lint-staged": {
-    "*.js": "eslint",
-    "*.{js,md}": "prettier --write --ignore-path .gitignore"
+    "*.{js,ts}": "eslint",
+    "*.{js,ts,md}": "prettier --write --ignore-path .gitignore"
   }
 }
