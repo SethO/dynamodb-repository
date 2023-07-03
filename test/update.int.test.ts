@@ -132,6 +132,8 @@ describe('When updating an item', () => {
 
       // ASSERT
       await expect(updateAction()).rejects.toHaveProperty('statusCode', 409);
+      await expect(updateAction()).rejects.toThrow(`${oldRevision}`);
+      await expect(updateAction()).rejects.toThrow(`${item.revision}`);
     });
   });
 });

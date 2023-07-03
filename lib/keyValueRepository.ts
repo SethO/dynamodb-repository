@@ -1,7 +1,16 @@
 import { BadRequest, NotFound, Conflict } from 'http-errors';
-import { DeleteCommand, DynamoDBDocumentClient, GetCommand, PutCommand, ScanCommand, ScanCommandInput, ScanCommandOutput } from '@aws-sdk/lib-dynamodb';
+import {
+  DeleteCommand,
+  DynamoDBDocumentClient,
+  GetCommand,
+  PutCommand,
+  PutCommandInput,
+  ScanCommand,
+  ScanCommandInput,
+  ScanCommandOutput,
+} from '@aws-sdk/lib-dynamodb';
 
-import { ConstructorArgs, IdOptions } from "./types";
+import { ConstructorArgs, IdOptions } from './types';
 import keyValueRepoConstructor from './validator';
 import { createCursor, parseCursor, createId } from './utils';
 
@@ -48,7 +57,7 @@ class KeyValueRepository {
     return Item;
   }
 
-  async getMany(input: { limit?: number, cursor?: string } = {}) {
+  async getMany(input: { limit?: number; cursor?: string } = {}) {
     const { limit = 100, cursor } = input;
     const scanParams: ScanCommandInput = {
       TableName: this.tableName,
@@ -106,7 +115,7 @@ class KeyValueRepository {
     validateHashKeyPropertyExists({ item, keyName: this.keyName });
     const itemToSave = setRepositoryModifiedProperties(item);
     const { revision: previousRevision } = item;
-    const putParams = {
+    const putParams: PutCommandInput = {
       TableName: this.tableName,
       Item: itemToSave,
       ConditionExpression: 'attribute_exists(#key) AND revision = :prevRev',
@@ -116,29 +125,50 @@ class KeyValueRepository {
       ExpressionAttributeValues: {
         ':prevRev': previousRevision,
       },
+      ReturnValuesOnConditionCheckFailure: 'ALL_OLD',
     };
     try {
       await this.docClient.send(new PutCommand(putParams));
     } catch (err: any) {
       if (err.name === 'ConditionalCheckFailedException') {
-        await this.get(item[this.keyName]);
-        throw Conflict();
+        const { Item } = err;
+        if (isNotFoundConflict(Item)) {
+          throw NotFound();
+        }
+        if (
+          isRevisionConflict({
+            expectedRevision: previousRevision,
+            actualRevision: Item?.revision?.N,
+          })
+        ) {
+          throw Conflict(
+            `Conflict: Item in DB has revision [${Item?.revision?.N}]. You are using revision [${previousRevision}]`,
+          );
+        }
       }
       throw err;
     }
 
     return itemToSave;
   }
+}
+
+const isNotFoundConflict = (itemFromError?: any) => !itemFromError;
+
+const isRevisionConflict = (input: { expectedRevision: number; actualRevision: number }) => {
+  const { expectedRevision, actualRevision } = input;
+
+  return expectedRevision !== actualRevision;
 };
 
-const validateHashKeyPropertyExists = (input: { item: any, keyName: string }) => {
+const validateHashKeyPropertyExists = (input: { item: any; keyName: string }) => {
   const { item, keyName } = input;
   if (!item[keyName]) {
     throw new BadRequest();
   }
 };
 
-const setRepositoryModifiedProperties = ( item: any) => {
+const setRepositoryModifiedProperties = (item: any) => {
   const returnItem = { ...item };
   returnItem.updatedAt = new Date().toISOString();
   returnItem.revision = item.revision + 1;
