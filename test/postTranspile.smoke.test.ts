@@ -1,8 +1,8 @@
-import { faker } from '@faker-js/faker'
+import { faker } from '@faker-js/faker';
 
 import {
   removeHashKeyItem,
-  createKeyValueItem,
+  createTestKeyValueItem,
   fetchHashKeyItem,
   insertHashKeyItem,
 } from './integrationTestUtils';
@@ -24,7 +24,7 @@ describe('When testing transpiled code', () => {
 
   it('should create', async () => {
     // ARRANGE
-    const item = await createKeyValueItem();
+    const item = await createTestKeyValueItem();
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
 
     // ACT
@@ -76,7 +76,7 @@ describe('When testing transpiled code', () => {
 
   it('should update', async () => {
     // ARRANGE
-    const item = await createKeyValueItem();
+    const item = await createTestKeyValueItem();
     const key = await insertHashKeyItem(item);
     testKeys.push(key);
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });

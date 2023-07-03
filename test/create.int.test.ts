@@ -1,6 +1,6 @@
 import {
   removeHashKeyItem,
-  createKeyValueItem,
+  createTestKeyValueItem,
   fetchHashKeyItem,
 } from './integrationTestUtils';
 import getDocumentClient from './documentClient';
@@ -20,7 +20,7 @@ describe('When creating item', () => {
 
   it('should save item to db', async () => {
     // ARRANGE
-    const item = await createKeyValueItem();
+    const item = await createTestKeyValueItem();
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
 
     // ACT
@@ -34,7 +34,7 @@ describe('When creating item', () => {
 
   it('should replace any id on provided item', async () => {
     // ARRANGE
-    const item = await createKeyValueItem();
+    const item = await createTestKeyValueItem();
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
 
     // ACT
@@ -49,7 +49,7 @@ describe('When creating item', () => {
 
   it('should set createdAt and updateAt', async () => {
     // ARRANGE
-    const item = await createKeyValueItem();
+    const item = await createTestKeyValueItem();
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
 
     // ACT
@@ -67,7 +67,7 @@ describe('When creating item', () => {
   describe('with a idOption prefix', () => {
     it('item id should start with prefix', async () => {
       // ARRANGE
-      const item = await createKeyValueItem();
+      const item = await createTestKeyValueItem();
       const prefix = 'itm_';
       const repo = new KeyValueRepository({
         tableName: TableName,

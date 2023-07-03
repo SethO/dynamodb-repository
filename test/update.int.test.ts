@@ -1,8 +1,8 @@
-import {faker} from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 
 import {
   removeHashKeyItem,
-  createKeyValueItem,
+  createTestKeyValueItem,
   insertHashKeyItem,
 } from './integrationTestUtils';
 import KeyValueRepository from '../lib/keyValueRepository';
@@ -41,7 +41,7 @@ describe('When updating an item', () => {
   describe('and item does not exist in db', () => {
     it('should return a 404 (Not Found)', async () => {
       // ARRANGE
-      const item = await createKeyValueItem();
+      const item = createTestKeyValueItem();
       const repo = new KeyValueRepository({
         tableName: TableName,
         keyName: KeyName,
@@ -58,22 +58,22 @@ describe('When updating an item', () => {
 
   it('should update the item in db', async () => {
     // ARRANGE
-    const item = await createKeyValueItem();
+    const item = createTestKeyValueItem();
     const key = await insertHashKeyItem(item);
     testKeys.push(key);
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
     const newField1 = faker.lorem.slug();
 
     // ACT
-    const result = await repo.update({...item, field1: newField1});
+    const result = await repo.update({ ...item, field1: newField1 });
 
     // ASSERT
     expect(result.field1).toEqual(newField1);
   });
-  
+
   it('should maintain original createdAt value', async () => {
     // ARRANGE
-    const item = await createKeyValueItem();
+    const item = createTestKeyValueItem();
     const originalCreatedAt = item.createdAt;
     const key = await insertHashKeyItem(item);
     testKeys.push(key);
@@ -88,7 +88,7 @@ describe('When updating an item', () => {
 
   it('should change original updatedAt value', async () => {
     // ARRANGE
-    const item = await createKeyValueItem();
+    const item = createTestKeyValueItem();
     const key = await insertHashKeyItem(item);
     testKeys.push(key);
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
@@ -102,7 +102,7 @@ describe('When updating an item', () => {
 
   it('should update revision value', async () => {
     // ARRANGE
-    const item = await createKeyValueItem();
+    const item = createTestKeyValueItem();
     const key = await insertHashKeyItem(item);
     testKeys.push(key);
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
@@ -117,7 +117,7 @@ describe('When updating an item', () => {
   describe('and revision is off', () => {
     it('should throw 409 (Conflict)', async () => {
       // ARRANGE
-      const item = await createKeyValueItem();
+      const item = createTestKeyValueItem();
       const oldRevision = item.revision - 1;
       const key = await insertHashKeyItem(item);
       testKeys.push(key);

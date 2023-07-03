@@ -7,13 +7,13 @@ import getDocumentClient from './documentClient';
 const TableName = 'HashKeyTestDB';
 const DocClient = getDocumentClient();
 
-export const createKeyValueItem = async () => {
+export const createTestKeyValueItem = () => {
   const createdDateString = faker.date.recent().toISOString();
   const item = {
     key: ulid(),
     createdAt: createdDateString,
     updatedAt: createdDateString,
-    revision: faker.datatype.number({ min: 1, max: 50 }),
+    revision: faker.number.int({ min: 1, max: 50 }),
     field1: faker.lorem.word(),
     map1: {
       field2: faker.lorem.word(),
@@ -26,7 +26,7 @@ export const createKeyValueItem = async () => {
 export const insertHashKeyItem = async (item?: any) => {
   let itemToSave;
   if (!item) {
-    itemToSave = await createKeyValueItem();
+    itemToSave = await createTestKeyValueItem();
   } else {
     itemToSave = { ...item };
   }
