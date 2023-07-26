@@ -7,13 +7,13 @@ const keyValueRepoConstructorSchema = Joi.object().keys({
   tableName: Joi.string().required(),
   keyName: Joi.string().required(),
   idOptions: Joi.object().keys({
-    length: Joi.number(),
-    prefix: Joi.string().token(),
+    prefix: Joi.string(),
   }),
   documentClient: Joi.object().required(),
 });
 
-const createMessage = (error: Joi.ValidationError) => error.details.map((detail) => detail.message).join(', ');
+const createMessage = (error: Joi.ValidationError) =>
+  error.details.map((detail) => detail.message).join(', ');
 
 const keyValueRepoConstructor = (constructorArgs: ConstructorArgs) => {
   const { error } = keyValueRepoConstructorSchema.validate(constructorArgs);

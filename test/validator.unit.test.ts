@@ -1,4 +1,4 @@
-import { ConstructorArgs, IdOptions } from '../lib/types';
+import { ConstructorArgs } from '../lib/types';
 import keyValueRepoConstructor from '../lib/validator';
 import getDocumentClient from './documentClient';
 
@@ -24,7 +24,11 @@ describe('When validating hash key repository constructor', () => {
   describe('with empty table name', () => {
     it('should throw', () => {
       // ARRANGE
-      const constructorArgs: ConstructorArgs = { keyName: 'someKeyName', tableName: '', documentClient };
+      const constructorArgs: ConstructorArgs = {
+        keyName: 'someKeyName',
+        tableName: '',
+        documentClient,
+      };
 
       // ACT
       const validationAction = () => keyValueRepoConstructor(constructorArgs);
@@ -35,7 +39,11 @@ describe('When validating hash key repository constructor', () => {
 
     it('should contain "tableName" in error message', () => {
       // ARRANGE
-      const constructorArgs: ConstructorArgs = { keyName: 'someKeyName', tableName: '', documentClient };
+      const constructorArgs: ConstructorArgs = {
+        keyName: 'someKeyName',
+        tableName: '',
+        documentClient,
+      };
 
       // ACT
       const validationAction = () => keyValueRepoConstructor(constructorArgs);
@@ -48,7 +56,11 @@ describe('When validating hash key repository constructor', () => {
   describe('with missing hash key name', () => {
     it('should throw', () => {
       // ARRANGE
-      const constructorArgs:ConstructorArgs = { tableName: 'someTableName', keyName: '', documentClient };
+      const constructorArgs: ConstructorArgs = {
+        tableName: 'someTableName',
+        keyName: '',
+        documentClient,
+      };
 
       // ACT
       const validationAction = () => keyValueRepoConstructor(constructorArgs);
@@ -59,7 +71,11 @@ describe('When validating hash key repository constructor', () => {
 
     it('should contain "keyName" in error message', () => {
       // ARRANGE
-      const constructorArgs: ConstructorArgs = { tableName: 'someTableName', keyName: '', documentClient };
+      const constructorArgs: ConstructorArgs = {
+        tableName: 'someTableName',
+        keyName: '',
+        documentClient,
+      };
 
       // ACT
       const validationAction = () => keyValueRepoConstructor(constructorArgs);
@@ -79,79 +95,6 @@ describe('When validating hash key repository constructor', () => {
 
       // ASSERT
       expect(validationAction).toThrow(/documentClient/i);
-    });
-  });
-
-  describe('with an idOption prefix with a non token character', () => {
-    it('should throw', () => {
-      // ARRANGE
-      const constructorArgs: ConstructorArgs = {
-        tableName: 'x',
-        keyName: 'y',
-        idOptions: {
-          prefix: '/',
-        },
-        documentClient,
-      };
-
-      // ACT
-      const validationAction = () => keyValueRepoConstructor(constructorArgs);
-
-      // ASSERT
-      expect(validationAction).toThrow();
-    });
-
-    it('should contain "keyName" in error message', () => {
-      // ARRANGE
-      const constructorArgs: ConstructorArgs = {
-        tableName: 'x',
-        keyName: 'y',
-        idOptions: {
-          prefix: '/',
-        },
-        documentClient,
-      };
-      // ACT
-      const validationAction = () => keyValueRepoConstructor(constructorArgs);
-
-      // ASSERT
-      expect(validationAction).toThrow(/prefix/i);
-    });
-  });
-
-  describe('with an idOption length of a non-number', () => {
-    it('should throw', () => {
-      // ARRANGE
-      const badIdOptions = {length: 'eleven'} as unknown;
-      const constructorArgs: ConstructorArgs = {
-        tableName: 'x',
-        keyName: 'y',
-        idOptions: badIdOptions as IdOptions,
-        documentClient
-      };
-
-      // ACT
-      const validationAction = () => keyValueRepoConstructor(constructorArgs);
-
-      // ASSERT
-      expect(validationAction).toThrow();
-    });
-
-    it('should contain "keyName" in error message', () => {
-      // ARRANGE
-      const badIdOptions = {length: 'eleven'} as unknown;
-      const constructorArgs: ConstructorArgs = {
-        tableName: 'x',
-        keyName: 'y',
-        idOptions: badIdOptions as IdOptions,
-        documentClient
-      };
-
-      // ACT
-      const validationAction = () => keyValueRepoConstructor(constructorArgs);
-
-      // ASSERT
-      expect(validationAction).toThrow(/length/i);
     });
   });
 });

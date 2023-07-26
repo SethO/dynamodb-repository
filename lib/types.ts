@@ -5,9 +5,8 @@ export type ConstructorArgs = {
   keyName: string;
   idOptions?: IdOptions;
   documentClient: DynamoDBDocumentClient;
-}
+};
 
 export type IdOptions = {
-  length?: number;
   prefix?: string;
-}
+};

@@ -30,7 +30,6 @@ class KeyValueRepository {
    * @param {string} param.keyName - The name of your Hash/Partition Key property
    * @param {Object} param.documentClient - Injectable DynamoDBDocumentClient (v3) from @aws-sdk/lib-dynamodb
    * @param {Object} [param.idOptions] - The idOptions parameter
-   * @param {number} [param.idOptions.length=22] - The length of the random bits of the generated id
    * @param {string} [param.idOptions.prefix=] - The prefix of your id
    */
   constructor(input: ConstructorArgs) {
