@@ -163,7 +163,7 @@ const isRevisionConflict = (input: { expectedRevision: number; actualRevision: n
 const validateHashKeyPropertyExists = (input: { item: any; keyName: string }) => {
   const { item, keyName } = input;
   if (!item[keyName]) {
-    throw new BadRequest();
+    throw new BadRequest(`Bad Request: Item has no key named "${keyName}"`);
   }
 };
 

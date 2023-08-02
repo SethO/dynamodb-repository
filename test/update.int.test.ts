@@ -21,7 +21,7 @@ describe('When updating an item', () => {
   });
 
   describe('and item does not have property of [keyName]', () => {
-    it('should return a 400 (Bad Request)', () => {
+    it('should return a 400 (Bad Request)', async () => {
       // ARRANGE
       const itemWithNoKey = {};
       const repo = new KeyValueRepository({
@@ -34,7 +34,8 @@ describe('When updating an item', () => {
       const updateAction = async () => repo.update(itemWithNoKey);
 
       // ASSERT
-      return expect(updateAction()).rejects.toHaveProperty('statusCode', 400);
+      await expect(updateAction()).rejects.toHaveProperty('statusCode', 400);
+      await expect(updateAction()).rejects.toThrow(/key/);
     });
   });
 
