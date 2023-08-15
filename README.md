@@ -20,7 +20,7 @@ const myRepo = new KeyValueRepository({
   keyName: 'id', // Required
   idOptions: {
     // Optional
-    prefix: 'ITEM#', // Default is empty string
+    prefix: 'ITEM_', // Default is empty string
   },
   documentClient, // Required - V3 DynamoDBDocumentClient from @aws-sdk/lib-dynamodb
 });
