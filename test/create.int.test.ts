@@ -1,3 +1,4 @@
+import retry from 'async-retry';
 import {
   removeHashKeyItem,
   createTestKeyValueItem,
@@ -28,8 +29,11 @@ describe('When creating item', () => {
     testKeys.push(key);
 
     // ASSERT
-    const itemFromDB = await fetchHashKeyItem(key);
-    expect(itemFromDB).not.toBeUndefined();
+    await retry(async () => {
+      const itemFromDB = await fetchHashKeyItem(key);
+      expect(itemFromDB).not.toBeUndefined();
+      expect(itemFromDB?.field1).toEqual(item.field1);
+    }, { retries: 3 });
   });
 
   it('should replace any id on provided item', async () => {
@@ -42,9 +46,11 @@ describe('When creating item', () => {
     testKeys.push(key);
 
     // ASSERT
-    expect(key).not.toEqual(item.key);
-    const itemFromDB = await fetchHashKeyItem(key);
-    expect(itemFromDB?.key).not.toEqual(item.key);
+    await retry(async () => {
+      expect(key).not.toEqual(item.key);
+      const itemFromDB = await fetchHashKeyItem(key);
+      expect(itemFromDB?.key).not.toEqual(item.key);
+    }, { retries: 3 });
   });
 
   it('should set createdAt and updateAt', async () => {
@@ -57,11 +63,13 @@ describe('When creating item', () => {
     testKeys.push(result.key);
 
     // ASSERT
-    expect(result.createdAt).not.toBeUndefined();
-    expect(result.createdAt).toEqual(result.updatedAt);
-    const itemFromDB = await fetchHashKeyItem(result.key);
-    expect(itemFromDB?.createdAt).not.toBeUndefined();
-    expect(itemFromDB?.createdAt).toEqual(itemFromDB?.updatedAt);
+    await retry(async () => {
+      expect(result.createdAt).not.toBeUndefined();
+      expect(result.createdAt).toEqual(result.updatedAt);
+      const itemFromDB = await fetchHashKeyItem(result.key);
+      expect(itemFromDB?.createdAt).not.toBeUndefined();
+      expect(itemFromDB?.createdAt).toEqual(itemFromDB?.updatedAt);
+    }, { retries: 3 });
   });
 
   describe('with a idOption prefix', () => {
@@ -82,9 +90,11 @@ describe('When creating item', () => {
       const { key } = await repo.create(item);
       testKeys.push(key);
 
-      // ASSERT
-      const itemFromDB = await fetchHashKeyItem(key);
-      expect(itemFromDB?.[KeyName]).toStartWith(prefix);
+      await retry(async () => {
+        // ASSERT
+        const itemFromDB = await fetchHashKeyItem(key);
+        expect(itemFromDB?.[KeyName]).toStartWith(prefix);
+      }, { retries: 3 });
     });
   });
 });
