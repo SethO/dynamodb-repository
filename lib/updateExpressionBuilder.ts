@@ -26,7 +26,7 @@ const internalNameBuilder = (item: any): any => {
 
 const internalValueBuilder = (item: any): any => {
   const itemKeys = Object.keys(item);
-  // itemKeys.reduce((accumulator, k, index) => ({ ...accumulator, [`:value${index}`]: item[k] }), {})
+
   return itemKeys.reduce(
     (accumulator, k, index) => ({ ...accumulator, [`:value_${index}`]: item[k] }),
     {},
