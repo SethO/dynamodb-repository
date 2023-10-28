@@ -72,7 +72,7 @@ describe('When updating an item', () => {
     expect(result.field1).toEqual(newField1);
   });
 
-  it.skip('should maintain original createdAt value', async () => {
+  it('should maintain original createdAt value', async () => {
     // ARRANGE
     const item = createTestKeyValueItem();
     const originalCreatedAt = item.createdAt;

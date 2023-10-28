@@ -10,6 +10,7 @@ import {
   ScanCommandOutput,
   UpdateCommand,
   UpdateCommandInput,
+  UpdateCommandOutput,
 } from '@aws-sdk/lib-dynamodb';
 
 import { ConstructorArgs, IdOptions } from './types';
@@ -158,10 +159,37 @@ class KeyValueRepository {
     return itemToSave;
   }
 
-  async updatePartial(item: any) {
+  async updatePartial(item: any): Promise<Record<string, any>> {
     validateHashKeyPropertyExists({ item, keyName: this.keyName });
+    const updateInput = this.buildUpdateCommandInput(item);
+    let result: UpdateCommandOutput;
+    try {
+      result = await this.docClient.send(new UpdateCommand(updateInput));
+    } catch (err: any) {
+      if (err.name === 'ConditionalCheckFailedException') {
+        const { Item } = err;
+        if (isNotFoundConflict(Item)) {
+          throw NotFound();
+        }
+        if (
+          isRevisionConflict({
+            expectedRevision: item.revision,
+            actualRevision: Item?.revision?.N,
+          })
+        ) {
+          throw Conflict(
+            `Conflict: Item in DB has revision [${Item?.revision?.N}]. You are using revision [${item.revision}]`,
+          );
+        }
+      }
+      throw err;
+    }
+    return result.Attributes || {};
+  }
+
+  private buildUpdateCommandInput(item: any): UpdateCommandInput {
     const { revision: previousRevision } = item;
-    const itemToSave = setRepositoryModifiedProperties(item);
+    const itemToSave = setRepositoryModifiedPropertiesForPartialUpdate(item);
     const key = createDynamoDbKey({ keyName: this.keyName, keyValue: itemToSave[this.keyName] });
     const updateInput: UpdateCommandInput = {
       TableName: this.tableName,
@@ -177,31 +205,11 @@ class KeyValueRepository {
         ':prevRev': previousRevision,
         ...this.updateExpressionsBuilder.buildExpressionValues(itemToSave),
       },
+      ReturnValues: 'ALL_NEW',
       ReturnValuesOnConditionCheckFailure: 'ALL_OLD',
     };
-    try {
-      await this.docClient.send(new UpdateCommand(updateInput));
-    } catch (err: any) {
-      if (err.name === 'ConditionalCheckFailedException') {
-        const { Item } = err;
-        if (isNotFoundConflict(Item)) {
-          throw NotFound();
-        }
-        if (
-          isRevisionConflict({
-            expectedRevision: previousRevision,
-            actualRevision: Item?.revision?.N,
-          })
-        ) {
-          throw Conflict(
-            `Conflict: Item in DB has revision [${Item?.revision?.N}]. You are using revision [${previousRevision}]`,
-          );
-        }
-      }
-      throw err;
-    }
 
-    return itemToSave;
+    return updateInput;
   }
 }
 
@@ -222,6 +230,15 @@ const validateHashKeyPropertyExists = (input: { item: any; keyName: string }) =>
 
 const setRepositoryModifiedProperties = (item: any) => {
   const returnItem = { ...item };
+  returnItem.updatedAt = new Date().toISOString();
+  returnItem.revision = item.revision + 1;
+
+  return returnItem;
+};
+
+const setRepositoryModifiedPropertiesForPartialUpdate = (item: any) => {
+  const returnItem = { ...item };
+  delete returnItem.createdAt;
   returnItem.updatedAt = new Date().toISOString();
   returnItem.revision = item.revision + 1;
 
