@@ -8,11 +8,14 @@ import {
   ScanCommand,
   ScanCommandInput,
   ScanCommandOutput,
+  UpdateCommand,
+  UpdateCommandInput,
 } from '@aws-sdk/lib-dynamodb';
 
 import { ConstructorArgs, IdOptions } from './types';
 import keyValueRepoConstructor from './validator';
-import { createCursor, parseCursor, createId } from './utils';
+import { createCursor, parseCursor, createId, createDynamoDbKey } from './utils';
+import { UpdateExpressionsBuilder } from './updateExpressionBuilder';
 
 class KeyValueRepository {
   private tableName: string;
@@ -22,6 +25,8 @@ class KeyValueRepository {
   private idOptions?: IdOptions;
 
   private docClient: DynamoDBDocumentClient;
+
+  private updateExpressionsBuilder: UpdateExpressionsBuilder;
 
   /**
    * Create a HashKey Repository
@@ -39,10 +44,11 @@ class KeyValueRepository {
     this.keyName = keyName;
     this.idOptions = idOptions;
     this.docClient = documentClient;
+    this.updateExpressionsBuilder = new UpdateExpressionsBuilder(keyName);
   }
 
   async get(hashKey: string) {
-    const key = { [this.keyName]: hashKey };
+    const key = createDynamoDbKey({ keyName: this.keyName, keyValue: hashKey });
     const getParams = {
       TableName: this.tableName,
       Key: key,
@@ -85,7 +91,7 @@ class KeyValueRepository {
   }
 
   async remove(hashKey: string) {
-    const key = { [this.keyName]: hashKey };
+    const key = createDynamoDbKey({ keyName: this.keyName, keyValue: hashKey });
     const deleteParams = {
       TableName: this.tableName,
       Key: key,
@@ -112,14 +118,15 @@ class KeyValueRepository {
 
   async update(item: any) {
     validateHashKeyPropertyExists({ item, keyName: this.keyName });
-    const itemToSave = setRepositoryModifiedProperties(item);
     const { revision: previousRevision } = item;
+    const itemToSave = setRepositoryModifiedProperties(item);
     const putParams: PutCommandInput = {
       TableName: this.tableName,
       Item: itemToSave,
-      ConditionExpression: 'attribute_exists(#key) AND revision = :prevRev',
+      ConditionExpression: 'attribute_exists(#key) AND #revision = :prevRev',
       ExpressionAttributeNames: {
         '#key': this.keyName,
+        '#revision': 'revision',
       },
       ExpressionAttributeValues: {
         ':prevRev': previousRevision,
@@ -128,6 +135,52 @@ class KeyValueRepository {
     };
     try {
       await this.docClient.send(new PutCommand(putParams));
+    } catch (err: any) {
+      if (err.name === 'ConditionalCheckFailedException') {
+        const { Item } = err;
+        if (isNotFoundConflict(Item)) {
+          throw NotFound();
+        }
+        if (
+          isRevisionConflict({
+            expectedRevision: previousRevision,
+            actualRevision: Item?.revision?.N,
+          })
+        ) {
+          throw Conflict(
+            `Conflict: Item in DB has revision [${Item?.revision?.N}]. You are using revision [${previousRevision}]`,
+          );
+        }
+      }
+      throw err;
+    }
+
+    return itemToSave;
+  }
+
+  async updatePartial(item: any) {
+    validateHashKeyPropertyExists({ item, keyName: this.keyName });
+    const { revision: previousRevision } = item;
+    const itemToSave = setRepositoryModifiedProperties(item);
+    const key = createDynamoDbKey({ keyName: this.keyName, keyValue: itemToSave[this.keyName] });
+    const updateInput: UpdateCommandInput = {
+      TableName: this.tableName,
+      Key: key,
+      ConditionExpression: 'attribute_exists(#key) AND #revision = :prevRev',
+      UpdateExpression: this.updateExpressionsBuilder.buildUpdateExpression(itemToSave),
+      ExpressionAttributeNames: {
+        '#key': this.keyName,
+        '#revision': 'revision',
+        ...this.updateExpressionsBuilder.buildExpressionNames(itemToSave),
+      },
+      ExpressionAttributeValues: {
+        ':prevRev': previousRevision,
+        ...this.updateExpressionsBuilder.buildExpressionValues(itemToSave),
+      },
+      ReturnValuesOnConditionCheckFailure: 'ALL_OLD',
+    };
+    try {
+      await this.docClient.send(new UpdateCommand(updateInput));
     } catch (err: any) {
       if (err.name === 'ConditionalCheckFailedException') {
         const { Item } = err;

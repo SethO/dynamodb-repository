@@ -1,7 +1,8 @@
-import { ulid } from "ulid";
+import { ulid } from 'ulid';
 import { BadRequest } from 'http-errors';
 
-export const createCursor = (lastEvaluatedKey: Record<string, any> | string) => (Buffer.from(JSON.stringify(lastEvaluatedKey)).toString('base64'));
+export const createCursor = (lastEvaluatedKey: Record<string, any> | string) =>
+  Buffer.from(JSON.stringify(lastEvaluatedKey)).toString('base64');
 
 export const parseCursor = (cursor: string) => {
   let result;
@@ -13,4 +14,10 @@ export const parseCursor = (cursor: string) => {
   return result;
 };
 
-export const createId = async ({ prefix = '' } = {}) => (`${prefix}${ulid()}`);
+export const createId = async ({ prefix = '' } = {}) => `${prefix}${ulid()}`;
+
+export const createDynamoDbKey = (input: { keyName: string; keyValue: any }) => {
+  const { keyName, keyValue } = input;
+
+  return { [keyName]: keyValue };
+};

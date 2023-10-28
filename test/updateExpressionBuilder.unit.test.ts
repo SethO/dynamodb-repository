@@ -1,182 +1,248 @@
-import { updateExpressionBuilder } from '../lib/updateExpressionBuilder';
+import { UpdateExpressionsBuilder } from '../lib/updateExpressionBuilder';
 
 describe('When building an update expression', () => {
   describe('with primitive-only properties', () => {
     it('should return an expression builder result', () => {
       // ARRANGE
-      const item = { name: 'Francisco', age: 31, isCool: true };
+      const item = { id: 'x', name: 'Francisco', age: 31, isCool: true };
+      const builder = new UpdateExpressionsBuilder('id');
 
       // ACT
-      const result = updateExpressionBuilder(item);
+      const updateExpression = builder.buildUpdateExpression(item);
 
       // ASSERT
-      expect(result.UpdateExpression).not.toBeEmpty();
-      expect(result.ExpressionAttributeNames).toBeObject();
-      expect(result.ExpressionAttributeValues).toBeObject();
+      expect(updateExpression).not.toBeEmpty();
+      expect(updateExpression).toBeString();
     });
 
-    it('should add "#field_[index]" for each property', () => {
+    it('should add "#prop_[index]" for each property', () => {
       // ARRANGE
-      const item = { name: 'Francisco', age: 31, isCool: true };
+      const item = { id: 'x', name: 'Francisco', age: 31, isCool: true };
+      const builder = new UpdateExpressionsBuilder('id');
 
       // ACT
-      const result = updateExpressionBuilder(item);
+      const updateExpression = builder.buildUpdateExpression(item);
 
       // ASSERT
-      expect(result.UpdateExpression).toContain('#field_0');
-      expect(result.UpdateExpression).toContain('#field_1');
-      expect(result.UpdateExpression).toContain('#field_2');
+      expect(updateExpression).toContain('#prop_0');
+      expect(updateExpression).toContain('#prop_1');
+      expect(updateExpression).toContain('#prop_2');
     });
 
     it('should add ":value_[index]" for each property', () => {
       // ARRANGE
-      const item = { name: 'Francisco', age: 31, isCool: true };
+      const item = { id: 'x', name: 'Francisco', age: 31, isCool: true };
+      const builder = new UpdateExpressionsBuilder('id');
 
       // ACT
-      const result = updateExpressionBuilder(item);
+      const updateExpression = builder.buildUpdateExpression(item);
 
       // ASSERT
-      expect(result.UpdateExpression).toContain(':value_0');
-      expect(result.UpdateExpression).toContain(':value_1');
-      expect(result.UpdateExpression).toContain(':value_2');
+      expect(updateExpression).toContain(':value_0');
+      expect(updateExpression).toContain(':value_1');
+      expect(updateExpression).toContain(':value_2');
     });
 
-    it('should correctly build Attribute Names', () => {
+    it('should remove the key property from the props', () => {
       // ARRANGE
-      const item = { name: 'Francisco', age: 31, isCool: true };
+      const item = { id: 'x', name: 'Francisco', age: 31, isCool: true };
+      const builder = new UpdateExpressionsBuilder('id');
 
       // ACT
-      const { ExpressionAttributeNames } = updateExpressionBuilder(item);
+      const updateExpression = builder.buildUpdateExpression(item);
 
       // ASSERT
-      expect(ExpressionAttributeNames['#field_0']).toEqual('name');
-      expect(ExpressionAttributeNames['#field_1']).toEqual('age');
-      expect(ExpressionAttributeNames['#field_2']).toEqual('isCool');
+      expect(updateExpression).not.toContain('#prop_3');
     });
 
-    it('should correctly build Attribute Values', () => {
+    it('should remove the key property from the values', () => {
       // ARRANGE
-      const item = { name: 'Francisco', age: 31, isCool: true };
+      const item = { id: 'x', name: 'Francisco', age: 31, isCool: true };
+      const builder = new UpdateExpressionsBuilder('id');
 
       // ACT
-      const { ExpressionAttributeValues } = updateExpressionBuilder(item);
+      const updateExpression = builder.buildUpdateExpression(item);
 
       // ASSERT
-      expect(ExpressionAttributeValues[':value_0']).toEqual(item.name);
-      expect(ExpressionAttributeValues[':value_1']).toEqual(item.age);
-      expect(ExpressionAttributeValues[':value_2']).toEqual(item.isCool);
+      expect(updateExpression).not.toContain(':value_3');
     });
   });
 
   describe('with an array property', () => {
-    it('should add "#field_[index]" for the array', () => {
+    it('should add "#prop_[index]" for the array', () => {
       // ARRANGE
       const item = {
+        id: 'x',
         name: 'Francisco',
         age: 31,
         isCool: true,
         pursuits: ['philosophy', 'physics', 'mining'],
       };
+      const builder = new UpdateExpressionsBuilder('id');
 
       // ACT
-      const result = updateExpressionBuilder(item);
+      const updateExpression = builder.buildUpdateExpression(item);
 
       // ASSERT
-      expect(result.UpdateExpression).toContain('#field_3');
+      expect(updateExpression).toContain('#prop_3');
     });
 
     it('should add ":value_[index]" for the array', () => {
       // ARRANGE
       const item = {
+        id: 'x',
         name: 'Francisco',
         age: 31,
         isCool: true,
         pursuits: ['philosophy', 'physics', 'mining'],
       };
+      const builder = new UpdateExpressionsBuilder('id');
 
       // ACT
-      const result = updateExpressionBuilder(item);
+      const updateExpression = builder.buildUpdateExpression(item);
 
       // ASSERT
-      expect(result.UpdateExpression).toContain(':value_3');
-    });
-
-    it('should correctly build Attribute Names', () => {
-      // ARRANGE
-      const item = {
-        name: 'Francisco',
-        age: 31,
-        isCool: true,
-        pursuits: ['philosophy', 'physics', 'mining'],
-      };
-
-      // ACT
-      const { ExpressionAttributeNames } = updateExpressionBuilder(item);
-
-      // ASSERT
-      expect(ExpressionAttributeNames['#field_3']).toEqual('pursuits');
-    });
-
-    it('should correctly build Attribute Values', () => {
-      // ARRANGE
-      const item = {
-        name: 'Francisco',
-        age: 31,
-        isCool: true,
-        pursuits: ['philosophy', 'physics', 'mining'],
-      };
-
-      // ACT
-      const { ExpressionAttributeValues } = updateExpressionBuilder(item);
-
-      // ASSERT
-      expect(ExpressionAttributeValues[':value_3']).toEqual(item.pursuits);
+      expect(updateExpression).toContain(':value_3');
     });
   });
 
   describe('with a map property', () => {
-    it('should add "#field_[index]" for the map', () => {
+    it('should add "#prop_[index]" for the map', () => {
       // ARRANGE
-      const item = { name: 'Francisco', age: 31, isCool: true, company: { location: 'Argentina' } };
+      const item = {
+        id: 'x',
+        name: 'Francisco',
+        age: 31,
+        isCool: true,
+        company: { location: 'Argentina' },
+      };
+      const builder = new UpdateExpressionsBuilder('id');
 
       // ACT
-      const result = updateExpressionBuilder(item);
+      const updateExpression = builder.buildUpdateExpression(item);
 
       // ASSERT
-      expect(result.UpdateExpression).toContain('#field_3');
+      expect(updateExpression).toContain('#prop_3');
     });
 
     it('should add ":value_[index]" for the map', () => {
       // ARRANGE
-      const item = { name: 'Francisco', age: 31, isCool: true, company: { location: 'Argentina' } };
+      const item = {
+        id: 'x',
+        name: 'Francisco',
+        age: 31,
+        isCool: true,
+        company: { location: 'Argentina' },
+      };
+      const builder = new UpdateExpressionsBuilder('id');
 
       // ACT
-      const result = updateExpressionBuilder(item);
+      const updateExpression = builder.buildUpdateExpression(item);
 
       // ASSERT
-      expect(result.UpdateExpression).toContain(':value_3');
+      expect(updateExpression).toContain(':value_3');
     });
+  });
+});
 
+describe('When building update expression names', () => {
+  describe('with primitive-only properties', () => {
     it('should correctly build Attribute Names', () => {
       // ARRANGE
-      const item = { name: 'Francisco', age: 31, isCool: true, company: { location: 'Argentina' } };
+      const item = { id: 'x', name: 'Francisco', age: 31, isCool: true };
+      const builder = new UpdateExpressionsBuilder('id');
 
       // ACT
-      const { ExpressionAttributeNames } = updateExpressionBuilder(item);
+      const expressionAttributeNames = builder.buildExpressionNames(item);
 
       // ASSERT
-      expect(ExpressionAttributeNames['#field_3']).toEqual('company');
+      expect(expressionAttributeNames['#prop_0']).toEqual('name');
+      expect(expressionAttributeNames['#prop_1']).toEqual('age');
+      expect(expressionAttributeNames['#prop_2']).toEqual('isCool');
     });
 
-    it('should correctly build Attribute Values', () => {
+    it('should not include the key property', () => {
       // ARRANGE
-      const item = { name: 'Francisco', age: 31, isCool: true, company: { location: 'Argentina' } };
+      const item = { id: 'x', name: 'Francisco', age: 31, isCool: true };
+      const builder = new UpdateExpressionsBuilder('id');
 
       // ACT
-      const { ExpressionAttributeValues } = updateExpressionBuilder(item);
+      const expressionAttributeNames = builder.buildExpressionNames(item);
 
       // ASSERT
-      expect(ExpressionAttributeValues[':value_3']).toEqual(item.company);
+      const values = Object.values(expressionAttributeNames);
+      expect(values).not.toContain('id');
+    });
+  });
+});
+
+describe('When building update expression values', () => {
+  describe('with primitive-only properties', () => {
+    it('should correctly build Attribute Values', () => {
+      // ARRANGE
+      const item = { id: 'x', name: 'Francisco', age: 31, isCool: true };
+      const builder = new UpdateExpressionsBuilder('id');
+
+      // ACT
+      const expressionAttributeValues = builder.buildExpressionValues(item);
+
+      // ASSERT
+      expect(expressionAttributeValues[':value_0']).toEqual(item.name);
+      expect(expressionAttributeValues[':value_1']).toEqual(item.age);
+      expect(expressionAttributeValues[':value_2']).toEqual(item.isCool);
+    });
+
+    it('should not include the key value', () => {
+      // ARRANGE
+      const item = { id: 'xyz', name: 'Francisco', age: 31, isCool: true };
+      const builder = new UpdateExpressionsBuilder('id');
+
+      // ACT
+      const expressionAttributeValues = builder.buildExpressionValues(item);
+
+      // ASSERT
+      const values = Object.values(expressionAttributeValues);
+      expect(values).not.toContain('xyz');
+    });
+  });
+
+  describe('with an array property', () => {
+    it('should correctly build Attribute Values', () => {
+      // ARRANGE
+      const item = {
+        id: 'x',
+        name: 'Francisco',
+        age: 31,
+        isCool: true,
+        pursuits: ['philosophy', 'physics', 'mining'],
+      };
+      const builder = new UpdateExpressionsBuilder('id');
+
+      // ACT
+      const expressionAttributeValues = builder.buildExpressionValues(item);
+
+      // ASSERT
+      expect(expressionAttributeValues[':value_3']).toEqual(item.pursuits);
+    });
+  });
+
+  describe('with a map property', () => {
+    it('should correctly build Attribute Values', () => {
+      // ARRANGE
+      const item = {
+        id: 'x',
+        name: 'Francisco',
+        age: 31,
+        isCool: true,
+        company: { location: 'Argentina' },
+      };
+      const builder = new UpdateExpressionsBuilder('id');
+
+      // ACT
+      const expressionAttributeValues = builder.buildExpressionValues(item);
+
+      // ASSERT
+      expect(expressionAttributeValues[':value_3']).toEqual(item.company);
     });
   });
 });

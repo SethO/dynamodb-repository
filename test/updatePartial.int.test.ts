@@ -31,7 +31,7 @@ describe('When updating an item', () => {
       });
 
       // ACT
-      const updateAction = async () => repo.update(itemWithNoKey);
+      const updateAction = async () => repo.updatePartial(itemWithNoKey);
 
       // ASSERT
       await expect(updateAction()).rejects.toHaveProperty('statusCode', 400);
@@ -50,7 +50,7 @@ describe('When updating an item', () => {
       });
 
       // ACT
-      const updateAction = async () => repo.update(item);
+      const updateAction = async () => repo.updatePartial(item);
 
       // ASSERT
       await expect(updateAction()).rejects.toHaveProperty('statusCode', 404);
@@ -66,7 +66,7 @@ describe('When updating an item', () => {
     const newField1 = faker.lorem.slug();
 
     // ACT
-    const result = await repo.update({ ...item, field1: newField1 });
+    const result = await repo.updatePartial({ ...item, field1: newField1 });
 
     // ASSERT
     expect(result.field1).toEqual(newField1);
@@ -82,7 +82,7 @@ describe('When updating an item', () => {
     item.createdAt = faker.date.past().toISOString();
 
     // ACT
-    const result = await repo.update(item);
+    const result = await repo.updatePartial(item);
 
     // ASSERT
     expect(result.createdAt).toEqual(originalCreatedAt);
@@ -96,7 +96,7 @@ describe('When updating an item', () => {
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
 
     // ACT
-    const result = await repo.update(item);
+    const result = await repo.updatePartial(item);
 
     // ASSERT
     expect(result.updatedAt).not.toEqual(item.updatedAt);
@@ -110,7 +110,7 @@ describe('When updating an item', () => {
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
 
     // ACT
-    const result = await repo.update(item);
+    const result = await repo.updatePartial(item);
 
     // ASSERT
     expect(result.revision).toEqual(item.revision + 1);
@@ -130,7 +130,7 @@ describe('When updating an item', () => {
       });
       item.revision = oldRevision;
       // ACT
-      const updateAction = () => repo.update(item);
+      const updateAction = () => repo.updatePartial(item);
 
       // ASSERT
       await expect(updateAction()).rejects.toHaveProperty('statusCode', 409);
