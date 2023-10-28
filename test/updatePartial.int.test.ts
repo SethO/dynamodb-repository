@@ -138,4 +138,29 @@ describe('When updating an item', () => {
       await expect(updateAction()).rejects.toThrow(`${item.revision}`);
     });
   });
+
+  describe('with a subset of properties', () => {
+    it('should return the entire object with the updated properties', async () => {
+      // ARRANGE
+      const item = createTestKeyValueItem();
+      const key = await insertHashKeyItem(item);
+      testKeys.push(key);
+      const itemWithoutField1: any = { ...item };
+      delete itemWithoutField1.field1;
+      const newMap = { field2: 'affirmative' };
+      itemWithoutField1.map1 = newMap;
+      const repo = new KeyValueRepository({
+        tableName: TableName,
+        keyName: KeyName,
+        documentClient,
+      });
+
+      // ACT
+      const result = await repo.updatePartial(itemWithoutField1);
+
+      // ASSERT
+      expect(result.map1).toEqual(newMap);
+      expect(result.field1).toEqual(item.field1);
+    });
+  });
 });
