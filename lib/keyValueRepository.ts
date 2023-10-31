@@ -118,7 +118,7 @@ class KeyValueRepository {
   }
 
   async update(item: any) {
-    validateHashKeyPropertyExists({ item, keyName: this.keyName });
+    this.validateHashKeyPropertyExists(item);
     const { revision: previousRevision } = item;
     const itemToSave = setRepositoryModifiedProperties(item);
     const putParams: PutCommandInput = {
@@ -160,7 +160,7 @@ class KeyValueRepository {
   }
 
   async updatePartial(item: any): Promise<Record<string, any>> {
-    validateHashKeyPropertyExists({ item, keyName: this.keyName });
+    this.validateHashKeyPropertyExists(item);
     const updateInput = this.buildUpdateCommandInput(item);
     let result: UpdateCommandOutput;
     try {
@@ -211,6 +211,12 @@ class KeyValueRepository {
 
     return updateInput;
   }
+
+  private validateHashKeyPropertyExists(item: any) {
+    if (!item[this.keyName]) {
+      throw new BadRequest(`Bad Request: Item has no key named "${this.keyName}"`);
+    }
+  }
 }
 
 const isNotFoundConflict = (itemFromError?: any) => !itemFromError;
@@ -219,13 +225,6 @@ const isRevisionConflict = (input: { expectedRevision: number; actualRevision: n
   const { expectedRevision, actualRevision } = input;
 
   return expectedRevision !== actualRevision;
-};
-
-const validateHashKeyPropertyExists = (input: { item: any; keyName: string }) => {
-  const { item, keyName } = input;
-  if (!item[keyName]) {
-    throw new BadRequest(`Bad Request: Item has no key named "${keyName}"`);
-  }
 };
 
 const setRepositoryModifiedProperties = (item: any) => {

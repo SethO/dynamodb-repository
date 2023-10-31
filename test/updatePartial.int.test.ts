@@ -11,7 +11,7 @@ import getDocumentClient from './documentClient';
 const TableName = 'HashKeyTestDB';
 const KeyName = 'key';
 
-describe('When updating an item', () => {
+describe('When partially updating an item', () => {
   const testKeys: string[] = [];
   const documentClient = getDocumentClient();
 
