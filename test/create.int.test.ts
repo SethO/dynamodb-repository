@@ -21,7 +21,7 @@ describe('When creating item', () => {
 
   it('should save item to db', async () => {
     // ARRANGE
-    const item = await createTestKeyValueItem();
+    const item = createTestKeyValueItem();
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
 
     // ACT
@@ -29,16 +29,19 @@ describe('When creating item', () => {
     testKeys.push(key);
 
     // ASSERT
-    await retry(async () => {
-      const itemFromDB = await fetchHashKeyItem(key);
-      expect(itemFromDB).not.toBeUndefined();
-      expect(itemFromDB?.field1).toEqual(item.field1);
-    }, { retries: 3 });
+    await retry(
+      async () => {
+        const itemFromDB = await fetchHashKeyItem(key);
+        expect(itemFromDB).not.toBeUndefined();
+        expect(itemFromDB?.field1).toEqual(item.field1);
+      },
+      { retries: 3 },
+    );
   });
 
   it('should replace any id on provided item', async () => {
     // ARRANGE
-    const item = await createTestKeyValueItem();
+    const item = createTestKeyValueItem();
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
 
     // ACT
@@ -46,16 +49,19 @@ describe('When creating item', () => {
     testKeys.push(key);
 
     // ASSERT
-    await retry(async () => {
-      expect(key).not.toEqual(item.key);
-      const itemFromDB = await fetchHashKeyItem(key);
-      expect(itemFromDB?.key).not.toEqual(item.key);
-    }, { retries: 3 });
+    await retry(
+      async () => {
+        expect(key).not.toEqual(item.key);
+        const itemFromDB = await fetchHashKeyItem(key);
+        expect(itemFromDB?.key).not.toEqual(item.key);
+      },
+      { retries: 3 },
+    );
   });
 
   it('should set createdAt and updateAt', async () => {
     // ARRANGE
-    const item = await createTestKeyValueItem();
+    const item = createTestKeyValueItem();
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
 
     // ACT
@@ -63,19 +69,22 @@ describe('When creating item', () => {
     testKeys.push(result.key);
 
     // ASSERT
-    await retry(async () => {
-      expect(result.createdAt).not.toBeUndefined();
-      expect(result.createdAt).toEqual(result.updatedAt);
-      const itemFromDB = await fetchHashKeyItem(result.key);
-      expect(itemFromDB?.createdAt).not.toBeUndefined();
-      expect(itemFromDB?.createdAt).toEqual(itemFromDB?.updatedAt);
-    }, { retries: 3 });
+    await retry(
+      async () => {
+        expect(result.createdAt).not.toBeUndefined();
+        expect(result.createdAt).toEqual(result.updatedAt);
+        const itemFromDB = await fetchHashKeyItem(result.key);
+        expect(itemFromDB?.createdAt).not.toBeUndefined();
+        expect(itemFromDB?.createdAt).toEqual(itemFromDB?.updatedAt);
+      },
+      { retries: 3 },
+    );
   });
 
   describe('with a idOption prefix', () => {
-    it('item id should start with prefix', async () => {
+    it('item id should start with prefix with underscore', async () => {
       // ARRANGE
-      const item = await createTestKeyValueItem();
+      const item = createTestKeyValueItem();
       const prefix = 'itm_';
       const repo = new KeyValueRepository({
         tableName: TableName,
@@ -90,11 +99,41 @@ describe('When creating item', () => {
       const { key } = await repo.create(item);
       testKeys.push(key);
 
-      await retry(async () => {
-        // ASSERT
-        const itemFromDB = await fetchHashKeyItem(key);
-        expect(itemFromDB?.[KeyName]).toStartWith(prefix);
-      }, { retries: 3 });
+      await retry(
+        async () => {
+          // ASSERT
+          const itemFromDB = await fetchHashKeyItem(key);
+          expect(itemFromDB?.[KeyName]).toStartWith(prefix);
+        },
+        { retries: 3 },
+      );
+    });
+
+    it('item id should start with prefix with pound', async () => {
+      // ARRANGE
+      const item = createTestKeyValueItem();
+      const prefix = 'itm#';
+      const repo = new KeyValueRepository({
+        tableName: TableName,
+        keyName: KeyName,
+        idOptions: {
+          prefix,
+        },
+        documentClient,
+      });
+
+      // ACT
+      const { key } = await repo.create(item);
+      testKeys.push(key);
+
+      await retry(
+        async () => {
+          // ASSERT
+          const itemFromDB = await fetchHashKeyItem(key);
+          expect(itemFromDB?.[KeyName]).toStartWith(prefix);
+        },
+        { retries: 3 },
+      );
     });
   });
 });
