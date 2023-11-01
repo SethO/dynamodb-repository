@@ -118,7 +118,7 @@ class KeyValueRepository {
   }
 
   async update(item: any) {
-    this.validateHashKeyPropertyExists(item);
+    this.validateRequiredProperties(item);
     const { revision: previousRevision } = item;
     const itemToSave = setRepositoryModifiedProperties(item);
     const putParams: PutCommandInput = {
@@ -160,7 +160,7 @@ class KeyValueRepository {
   }
 
   async updatePartial(item: any): Promise<Record<string, any>> {
-    this.validateHashKeyPropertyExists(item);
+    this.validateRequiredProperties(item);
     const updateInput = this.buildUpdateCommandInput(item);
     let result: UpdateCommandOutput;
     try {
@@ -212,9 +212,12 @@ class KeyValueRepository {
     return updateInput;
   }
 
-  private validateHashKeyPropertyExists(item: any) {
+  private validateRequiredProperties(item: any) {
     if (!item[this.keyName]) {
       throw new BadRequest(`Bad Request: Item has no key named "${this.keyName}"`);
+    }
+    if (!item.revision) {
+      throw new BadRequest('Bad Request: Item has no revision');
     }
   }
 }

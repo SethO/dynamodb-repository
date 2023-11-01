@@ -39,6 +39,26 @@ describe('When updating an item', () => {
     });
   });
 
+  describe('and item does not have property of revision', () => {
+    it('should return a 400 (Bad Request)', async () => {
+      // ARRANGE
+      const itemWithNoRevision: any = createTestKeyValueItem();
+      delete itemWithNoRevision.revision;
+      const repo = new KeyValueRepository({
+        tableName: TableName,
+        keyName: KeyName,
+        documentClient,
+      });
+
+      // ACT
+      const updateAction = async () => repo.update(itemWithNoRevision);
+
+      // ASSERT
+      await expect(updateAction()).rejects.toHaveProperty('statusCode', 400);
+      await expect(updateAction()).rejects.toThrow(/revision/);
+    });
+  });
+
   describe('and item does not exist in db', () => {
     it('should return a 404 (Not Found)', async () => {
       // ARRANGE
