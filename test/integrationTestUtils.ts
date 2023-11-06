@@ -13,7 +13,7 @@ export const createTestKeyValueItem = () => {
     key: ulid(),
     createdAt: createdDateString,
     updatedAt: createdDateString,
-    revision: faker.number.int({ min: 1, max: 50 }),
+    revision: faker.number.int({ min: 2 }),
     field1: faker.lorem.word(),
     map1: {
       field2: faker.lorem.word(),
