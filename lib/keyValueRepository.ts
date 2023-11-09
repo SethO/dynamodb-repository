@@ -4,7 +4,6 @@ import {
   DynamoDBDocumentClient,
   GetCommand,
   PutCommand,
-  PutCommandInput,
   ScanCommand,
   ScanCommandInput,
   ScanCommandOutput,
@@ -117,49 +116,7 @@ class KeyValueRepository {
     return itemToSave;
   }
 
-  async update(item: any) {
-    this.validateRequiredProperties(item);
-    const { revision: previousRevision } = item;
-    const itemToSave = setRepositoryModifiedProperties(item);
-    const putParams: PutCommandInput = {
-      TableName: this.tableName,
-      Item: itemToSave,
-      ConditionExpression: 'attribute_exists(#key) AND #revision = :prevRev',
-      ExpressionAttributeNames: {
-        '#key': this.keyName,
-        '#revision': 'revision',
-      },
-      ExpressionAttributeValues: {
-        ':prevRev': previousRevision,
-      },
-      ReturnValuesOnConditionCheckFailure: 'ALL_OLD',
-    };
-    try {
-      await this.docClient.send(new PutCommand(putParams));
-    } catch (err: any) {
-      if (err.name === 'ConditionalCheckFailedException') {
-        const { Item } = err;
-        if (isNotFoundConflict(Item)) {
-          throw NotFound();
-        }
-        if (
-          isRevisionConflict({
-            expectedRevision: previousRevision,
-            actualRevision: Item?.revision?.N,
-          })
-        ) {
-          throw Conflict(
-            `Conflict: Item in DB has revision [${Item?.revision?.N}]. You are using revision [${previousRevision}]`,
-          );
-        }
-      }
-      throw err;
-    }
-
-    return itemToSave;
-  }
-
-  async updatePartial(item: any): Promise<Record<string, any>> {
+  async update(item: any): Promise<Record<string, any>> {
     this.validateRequiredProperties(item);
     const updateInput = this.buildUpdateCommandInput(item);
     let result: UpdateCommandOutput;
@@ -189,7 +146,7 @@ class KeyValueRepository {
 
   private buildUpdateCommandInput(item: any): UpdateCommandInput {
     const { revision: previousRevision } = item;
-    const itemToSave = setRepositoryModifiedPropertiesForPartialUpdate(item);
+    const itemToSave = setRepositoryModifiedPropertiesForUpdate(item);
     const key = createDynamoDbKey({ keyName: this.keyName, keyValue: itemToSave[this.keyName] });
     const updateInput: UpdateCommandInput = {
       TableName: this.tableName,
@@ -230,15 +187,7 @@ const isRevisionConflict = (input: { expectedRevision: number; actualRevision: n
   return expectedRevision !== actualRevision;
 };
 
-const setRepositoryModifiedProperties = (item: any) => {
-  const returnItem = { ...item };
-  returnItem.updatedAt = new Date().toISOString();
-  returnItem.revision = item.revision + 1;
-
-  return returnItem;
-};
-
-const setRepositoryModifiedPropertiesForPartialUpdate = (item: any) => {
+const setRepositoryModifiedPropertiesForUpdate = (item: any) => {
   const returnItem = { ...item };
   delete returnItem.createdAt;
   returnItem.updatedAt = new Date().toISOString();

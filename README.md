@@ -100,4 +100,33 @@ await getAllItems();
 await myRepo.remove(id);
 ```
 
+## Update
+
+- Requires `dynamodb:UpdateItem`
+- Honors revision check; it will only update if the revision on disk is the one you are updating. Will return a `409` if the revision has changed underneath you.
+- Will perform a partial update if you don't pass in all properties. Think of this as a "patch" vs. a replacement update. The `key` and `revision` properties are always required.
+- Returns the entire entity, including both new and unchanged properties
+
+```js
+const person = await myRepo.create({
+  name: 'Joe',
+  age: 28,
+  favoriteColor: 'blue',
+});
+// Full item update
+person.favoriteColor = 'teal';
+const newPerson1 = await myRepo.update(person);
+console.log(newPerson1.favoriteColor); // 'teal'
+
+// Partial update
+const partial = {
+  favoriteColor: 'aquamarine',
+  key: person.key,
+  revision: newPerson1.revision,
+};
+const newPerson2 = await myRepo.update(partial);
+console.log(newPerson2.favoriteColor); // 'aquamarine'
+console.log(newPerson2.age); // 28
+```
+
 // More Coming Soon...

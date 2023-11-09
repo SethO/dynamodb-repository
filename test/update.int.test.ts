@@ -86,13 +86,31 @@ describe('When updating an item', () => {
     const newField1 = faker.lorem.slug();
 
     // ACT
+    await repo.update({ ...item, field1: newField1 });
+
+    // ASSERT
+    const itemInDb = await repo.get(key);
+    expect(itemInDb.field1).toEqual(newField1);
+  });
+
+  it('should return the entire object, including unchanged properties', async () => {
+    // ARRANGE
+    const item = createTestKeyValueItem();
+    const key = await insertHashKeyItem(item);
+    testKeys.push(key);
+    const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
+    const newField1 = faker.lorem.slug();
+
+    // ACT
     const result = await repo.update({ ...item, field1: newField1 });
 
     // ASSERT
+    expect(result.map1).toEqual(item.map1);
+    expect(result.field1).not.toEqual(item.field1);
     expect(result.field1).toEqual(newField1);
   });
 
-  it.skip('should maintain original createdAt value', async () => {
+  it('should maintain original createdAt value', async () => {
     // ARRANGE
     const item = createTestKeyValueItem();
     const originalCreatedAt = item.createdAt;
@@ -156,6 +174,31 @@ describe('When updating an item', () => {
       await expect(updateAction()).rejects.toHaveProperty('statusCode', 409);
       await expect(updateAction()).rejects.toThrow(`${oldRevision}`);
       await expect(updateAction()).rejects.toThrow(`${item.revision}`);
+    });
+  });
+
+  describe('with a subset of properties', () => {
+    it('should return the entire object with the updated properties', async () => {
+      // ARRANGE
+      const item = createTestKeyValueItem();
+      const key = await insertHashKeyItem(item);
+      testKeys.push(key);
+      const itemWithoutField1: any = { ...item };
+      delete itemWithoutField1.field1;
+      const newMap = { field2: 'affirmative' };
+      itemWithoutField1.map1 = newMap;
+      const repo = new KeyValueRepository({
+        tableName: TableName,
+        keyName: KeyName,
+        documentClient,
+      });
+
+      // ACT
+      const result = await repo.update(itemWithoutField1);
+
+      // ASSERT
+      expect(result.map1).toEqual(newMap);
+      expect(result.field1).toEqual(item.field1);
     });
   });
 });
