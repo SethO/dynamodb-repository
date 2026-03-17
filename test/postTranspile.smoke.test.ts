@@ -8,7 +8,8 @@ import {
 } from './integrationTestUtils';
 import getDocumentClient from './documentClient';
 
-import { KeyValueRepository } from '../.build/index.js';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { KeyValueRepository } = require('../.build/index.js');
 
 const TableName = 'HashKeyTestDB';
 const KeyName = 'key';
