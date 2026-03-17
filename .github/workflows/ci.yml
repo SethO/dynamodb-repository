@@ -5,7 +5,7 @@ name: CI & Test
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
 
 # These permissions are needed to interact with GitHub's OIDC Token endpoint.
 permissions:
@@ -14,28 +14,27 @@ permissions:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js 18.x
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18.x
-        registry-url: 'https://registry.npmjs.org'
-    - name: Install dependencies
-      run: npm ci
-    - name: Run unit tests
-      run: npm test
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-region: us-east-1
-        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-    - name: Run integration tests
-      run: npm run test:int
-    - name: Publish
-      run: npm run smart-publish
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      - uses: actions/checkout@v3
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 24.x
+          registry-url: "https://registry.npmjs.org"
+      - name: Install dependencies
+        run: npm ci
+      - name: Run unit tests
+        run: npm test
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+      - name: Run integration tests
+        run: npm run test:int
+      - name: Publish
+        run: npm run smart-publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
