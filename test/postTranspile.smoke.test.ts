@@ -8,7 +8,7 @@ import {
 } from './integrationTestUtils';
 import getDocumentClient from './documentClient';
 
-const { KeyValueRepository } = require('../.build/index.js');
+import { KeyValueRepository } from '../.build/index.js';
 
 const TableName = 'HashKeyTestDB';
 const KeyName = 'key';

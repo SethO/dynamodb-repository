@@ -8,7 +8,7 @@ export const parseCursor = (cursor: string) => {
   let result;
   try {
     result = JSON.parse(Buffer.from(cursor, 'base64').toString('utf8'));
-  } catch (err) {
+  } catch {
     throw new BadRequest('Bad Request: cursor is not valid');
   }
   return result;
