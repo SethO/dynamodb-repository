@@ -32,7 +32,7 @@
   ],
   "dependencies": {
     "@aws-sdk/lib-dynamodb": "^3.363.0",
-    "http-errors": "^2.0.0",
+    "http-errors": "^2.0.1",
     "joi": "^17.10.2",
     "ulid": "^2.3.0"
   },
