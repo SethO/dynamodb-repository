@@ -31,13 +31,13 @@
     "seth"
   ],
   "dependencies": {
-    "@aws-sdk/lib-dynamodb": "^3.1011.0",
+    "@aws-sdk/lib-dynamodb": "^3.1012.0",
     "http-errors": "^2.0.1",
     "joi": "^18.0.2",
     "ulid": "^2.3.0"
   },
   "devDependencies": {
-    "@aws-sdk/client-dynamodb": "^3.1011.0",
+    "@aws-sdk/client-dynamodb": "^3.1012.0",
     "@faker-js/faker": "^8.1.0",
     "@swc/core": "^1.15.18",
     "@swc/jest": "^0.2.39",
