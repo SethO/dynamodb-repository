@@ -1,11 +1,12 @@
-import { faker } from '@faker-js/faker';
 import { createCursor, parseCursor, createId } from '../lib/utils';
+import getFaker from './faker';
 
 describe('When creating cursor', () => {
   describe('from a string', () => {
-    it('should result in a string', () => {
+    it('should result in a string', async () => {
       // ARRANGE
-      const originalStringCursor = faker.datatype.uuid();
+      const faker = await getFaker();
+      const originalStringCursor = faker.string.uuid();
 
       // ACT
       const result = createCursor(originalStringCursor);
@@ -16,9 +17,10 @@ describe('When creating cursor', () => {
   });
 
   describe('from an integer', () => {
-    it('should result in a string', () => {
+    it('should result in a string', async () => {
       // ARRANGE
-      const originalNumberCursor = faker.datatype.number() as unknown;
+      const faker = await getFaker();
+      const originalNumberCursor = faker.number.int() as unknown;
 
       // ACT
       const result = createCursor(originalNumberCursor as string);
@@ -44,9 +46,10 @@ describe('When creating cursor', () => {
 
 describe('When parsing cursor', () => {
   describe('with original string value', () => {
-    it('should return original value', () => {
+    it('should return original value', async () => {
       // ARRANGE
-      const originalStringValue = faker.datatype.uuid();
+      const faker = await getFaker();
+      const originalStringValue = faker.string.uuid();
       const encodedCursor = createCursor(originalStringValue);
 
       // ACT
@@ -58,9 +61,10 @@ describe('When parsing cursor', () => {
   });
 
   describe('with original number value', () => {
-    it('should return original value', () => {
+    it('should return original value', async () => {
       // ARRANGE
-      const originalNumberValue = faker.datatype.number().toString();
+      const faker = await getFaker();
+      const originalNumberValue = faker.number.int().toString();
       const encodedCursor = createCursor(originalNumberValue);
 
       // ACT

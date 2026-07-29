@@ -1,5 +1,3 @@
-import { faker } from '@faker-js/faker';
-
 import {
   removeHashKeyItem,
   createTestKeyValueItem,
@@ -7,6 +5,7 @@ import {
 } from './integrationTestUtils';
 import KeyValueRepository from '../lib/keyValueRepository';
 import getDocumentClient from './documentClient';
+import getFaker from './faker';
 
 const TableName = 'HashKeyTestDB';
 const KeyName = 'key';
@@ -42,7 +41,7 @@ describe('When updating an item', () => {
   describe('and item does not have property of revision', () => {
     it('should return a 400 (Bad Request)', async () => {
       // ARRANGE
-      const itemWithNoRevision: any = createTestKeyValueItem();
+      const itemWithNoRevision: any = await createTestKeyValueItem();
       delete itemWithNoRevision.revision;
       const repo = new KeyValueRepository({
         tableName: TableName,
@@ -62,7 +61,7 @@ describe('When updating an item', () => {
   describe('and item does not exist in db', () => {
     it('should return a 404 (Not Found)', async () => {
       // ARRANGE
-      const item = createTestKeyValueItem();
+      const item = await createTestKeyValueItem();
       const repo = new KeyValueRepository({
         tableName: TableName,
         keyName: KeyName,
@@ -79,10 +78,11 @@ describe('When updating an item', () => {
 
   it('should update the item in db', async () => {
     // ARRANGE
-    const item = createTestKeyValueItem();
+    const item = await createTestKeyValueItem();
     const key = await insertHashKeyItem(item);
     testKeys.push(key);
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
+    const faker = await getFaker();
     const newField1 = faker.lorem.slug();
 
     // ACT
@@ -95,10 +95,11 @@ describe('When updating an item', () => {
 
   it('should return the entire object, including unchanged properties', async () => {
     // ARRANGE
-    const item = createTestKeyValueItem();
+    const item = await createTestKeyValueItem();
     const key = await insertHashKeyItem(item);
     testKeys.push(key);
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
+    const faker = await getFaker();
     const newField1 = faker.lorem.slug();
 
     // ACT
@@ -112,11 +113,12 @@ describe('When updating an item', () => {
 
   it('should maintain original createdAt value', async () => {
     // ARRANGE
-    const item = createTestKeyValueItem();
+    const item = await createTestKeyValueItem();
     const originalCreatedAt = item.createdAt;
     const key = await insertHashKeyItem(item);
     testKeys.push(key);
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
+    const faker = await getFaker();
     item.createdAt = faker.date.past().toISOString();
 
     // ACT
@@ -128,7 +130,7 @@ describe('When updating an item', () => {
 
   it('should change original updatedAt value', async () => {
     // ARRANGE
-    const item = createTestKeyValueItem();
+    const item = await createTestKeyValueItem();
     const key = await insertHashKeyItem(item);
     testKeys.push(key);
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
@@ -142,7 +144,7 @@ describe('When updating an item', () => {
 
   it('should update revision value', async () => {
     // ARRANGE
-    const item = createTestKeyValueItem();
+    const item = await createTestKeyValueItem();
     const key = await insertHashKeyItem(item);
     testKeys.push(key);
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
@@ -157,7 +159,7 @@ describe('When updating an item', () => {
   describe('and revision is off', () => {
     it('should throw 409 (Conflict)', async () => {
       // ARRANGE
-      const item = createTestKeyValueItem();
+      const item = await createTestKeyValueItem();
       const oldRevision = item.revision - 1;
       const key = await insertHashKeyItem(item);
       testKeys.push(key);
@@ -180,7 +182,7 @@ describe('When updating an item', () => {
   describe('with a subset of properties', () => {
     it('should return the entire object with the updated properties', async () => {
       // ARRANGE
-      const item = createTestKeyValueItem();
+      const item = await createTestKeyValueItem();
       const key = await insertHashKeyItem(item);
       testKeys.push(key);
       const itemWithoutField1: any = { ...item };

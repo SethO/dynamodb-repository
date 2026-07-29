@@ -8,7 +8,7 @@
     "node": ">= 14"
   },
   "scripts": {
-    "build": "rm -rf .build && npx tsc && rm -rf .build/test",
+    "build": "rm -rf .build && npx tsc -p tsconfig.build.json",
     "test": "npm run lint && npm run test:unit",
     "test:unit": "npx jest unit.test --silent",
     "test:int": "npx jest int.test --silent",
@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@aws-sdk/client-dynamodb": "^3.1012.0",
-    "@faker-js/faker": "^8.1.0",
+    "@faker-js/faker": "^10.4.0",
     "@swc/core": "^1.15.18",
     "@swc/jest": "^0.2.39",
     "@tsconfig/node18": "^18.2.0",

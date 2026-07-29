@@ -1,13 +1,14 @@
-import { faker } from '@faker-js/faker';
 import { ulid } from 'ulid';
 import { DeleteCommand, GetCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
 
 import getDocumentClient from './documentClient';
+import getFaker from './faker';
 
 const TableName = 'HashKeyTestDB';
 const DocClient = getDocumentClient();
 
-export const createTestKeyValueItem = () => {
+export const createTestKeyValueItem = async () => {
+  const faker = await getFaker();
   const createdDateString = faker.date.recent().toISOString();
   const item = {
     key: ulid(),

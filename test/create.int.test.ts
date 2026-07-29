@@ -21,7 +21,7 @@ describe('When creating item', () => {
 
   it('should save item to db', async () => {
     // ARRANGE
-    const item = createTestKeyValueItem();
+    const item = await createTestKeyValueItem();
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
 
     // ACT
@@ -41,7 +41,7 @@ describe('When creating item', () => {
 
   it('should replace any id on provided item', async () => {
     // ARRANGE
-    const item = createTestKeyValueItem();
+    const item = await createTestKeyValueItem();
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
 
     // ACT
@@ -61,7 +61,7 @@ describe('When creating item', () => {
 
   it('should set createdAt and updateAt', async () => {
     // ARRANGE
-    const item = createTestKeyValueItem();
+    const item = await createTestKeyValueItem();
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
 
     // ACT
@@ -84,7 +84,7 @@ describe('When creating item', () => {
   describe('with a idOption prefix', () => {
     it('item id should start with prefix with underscore', async () => {
       // ARRANGE
-      const item = createTestKeyValueItem();
+      const item = await createTestKeyValueItem();
       const prefix = 'itm_';
       const repo = new KeyValueRepository({
         tableName: TableName,
@@ -111,7 +111,7 @@ describe('When creating item', () => {
 
     it('item id should start with prefix with pound', async () => {
       // ARRANGE
-      const item = createTestKeyValueItem();
+      const item = await createTestKeyValueItem();
       const prefix = 'itm#';
       const repo = new KeyValueRepository({
         tableName: TableName,

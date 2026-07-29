@@ -1,7 +1,7 @@
-import { faker } from '@faker-js/faker';
 import { insertHashKeyItem, removeHashKeyItem } from './integrationTestUtils';
 import getDocumentClient from './documentClient';
 import KeyValueRepository from '../lib/keyValueRepository';
+import getFaker from './faker';
 
 const TableName = 'HashKeyTestDB';
 const KeyName = 'key';
@@ -35,7 +35,8 @@ describe('When getting by hash key', () => {
         keyName: KeyName,
         documentClient,
       });
-      const fakeKey = faker.datatype.uuid();
+      const faker = await getFaker();
+      const fakeKey = faker.string.uuid();
 
       // ACT/ASSERT
       await expect(repo.get(fakeKey)).rejects.toThrow(`No ${KeyName} found`);
@@ -47,7 +48,8 @@ describe('When getting by hash key', () => {
         keyName: KeyName,
         documentClient,
       });
-      const fakeKey = faker.datatype.uuid();
+      const faker = await getFaker();
+      const fakeKey = faker.string.uuid();
 
       // ACT/ASSERT
       await expect(repo.get(fakeKey)).rejects.toThrow(fakeKey);

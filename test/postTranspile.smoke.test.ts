@@ -1,5 +1,3 @@
-import { faker } from '@faker-js/faker';
-
 import {
   removeHashKeyItem,
   createTestKeyValueItem,
@@ -7,6 +5,7 @@ import {
   insertHashKeyItem,
 } from './integrationTestUtils';
 import getDocumentClient from './documentClient';
+import getFaker from './faker';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { KeyValueRepository } = require('../.build/index.js');
@@ -81,6 +80,7 @@ describe('When testing transpiled code', () => {
     const key = await insertHashKeyItem(item);
     testKeys.push(key);
     const repo = new KeyValueRepository({ tableName: TableName, keyName: KeyName, documentClient });
+    const faker = await getFaker();
     const newField1 = faker.lorem.slug();
 
     // ACT
