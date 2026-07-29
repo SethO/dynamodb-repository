@@ -41,7 +41,7 @@
     "@faker-js/faker": "^10.4.0",
     "@swc/core": "^1.15.18",
     "@swc/jest": "^0.2.39",
-    "@tsconfig/node18": "^18.2.0",
+    "@tsconfig/node24": "^24.0.4",
     "@types/async-retry": "^1.4.7",
     "@types/http-errors": "^2.0.2",
     "@types/jest": "^30.0.0",
