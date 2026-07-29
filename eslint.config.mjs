@@ -1,5 +1,6 @@
 import tseslint from 'typescript-eslint';
 import noOnlyTests from 'eslint-plugin-no-only-tests';
+import jest from 'eslint-plugin-jest';
 import prettier from 'eslint-config-prettier';
 import globals from 'globals';
 
@@ -35,5 +36,9 @@ export default tseslint.config(
         project: './tsconfig.json',
       },
     },
+  },
+  {
+    files: ['test/**/*.ts'],
+    ...jest.configs['flat/recommended'],
   },
 );
