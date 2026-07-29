@@ -7,6 +7,10 @@ on:
   push:
     branches: [master]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 # These permissions are needed to interact with GitHub's OIDC Token endpoint.
 permissions:
   id-token: write
