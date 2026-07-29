@@ -64,5 +64,8 @@
   "lint-staged": {
     "*.{js,ts}": "eslint",
     "*.{js,ts,md}": "prettier --write --ignore-path .gitignore"
+  },
+  "overrides": {
+    "brace-expansion": "^5.0.8"
   }
 }
